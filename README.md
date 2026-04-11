@@ -25,6 +25,8 @@ No OpenAI. No Coinbase. No Ethereum. No central operator. No call-home.
 
 > daemon-ai for local reasoning · Logos Blockchain for private settlement · Logos Messaging for discovery · Logos Storage for delivery
 
+**[▶ Watch the demo video](https://github.com/Beach-Bum/Agora/releases/tag/v1.0.0)** — real blockchain, real LLM, real P2P messaging, no mocks
+
 **[▶ Try the interactive demo](https://htmlpreview.github.io/?https://github.com/Beach-Bum/Agentic-market/blob/main/demo.html)**
 
 ---
@@ -359,12 +361,12 @@ agentic-market/
 │   ├── testnet_deploy.py          — deploy 5 agents with identities + A2A cards
 │   ├── e2e_demos.py               — 3 E2E demos (inference, multi-skill, owner)
 │   ├── verify_risc0.py            — RISC0_DEV_MODE=0 verification
-│   └── record_demo.sh             — automated narrated video demo driver
+│   ├── demo_live.py               — live demo: real blockchain + LLM + messaging
+│   ├── demo_real_node.py           — real logos-blockchain-node demo
+│   └── run_live_demo.sh           — screen recording demo runner
 │
 ├── demo.html                      — standalone interactive demo
 ├── build_and_deploy.sh            — one-shot build + deploy to LogosApp.app
-├── MEMORY.md                      — project context for AI-assisted development
-├── CLAUDE.md                      — Claude Code + gstack configuration
 └── README.md
 ```
 
@@ -385,6 +387,8 @@ agentic-market/
 
 daemon-ai on Agora targets the **LP-0008 Lambda Prize ($1,200)** for demonstrating autonomous AI agents on the Logos stack.
 
+**[Submission PR](https://github.com/logos-co/lambda-prize/pull/34)** | **[Demo video](https://github.com/Beach-Bum/Agora/releases/tag/v1.0.0)**
+
 | Requirement | Status |
 |---|---|
 | Qt Remote Objects module | Done — `agent/remoteobjects/DaemonAgent.rep` |
@@ -398,15 +402,28 @@ daemon-ai on Agora targets the **LP-0008 Lambda Prize ($1,200)** for demonstrati
 | 3 E2E use case demos | Done — `scripts/e2e_demos.py` (inference trade, multi-skill, owner approval) |
 | RISC0_DEV_MODE=0 | Done — `scripts/verify_risc0.py` (node-level, agent code clean) |
 
-### Quick Start (LP-0008)
+### Live Demo (Real Services)
+
+The demo runs against **three real local services** — zero mocks:
+
+| Service | Port | What |
+|---|---|---|
+| logos-blockchain-node | 18080 | Groth16 ZK proofs, shielded UTXO transfers |
+| Ollama (llama3.2:3b) | 11434 | Local LLM inference, no API key |
+| Waku nwaku (2 nodes) | 8645/8646 | P2P relay messaging over libp2p |
 
 ```bash
+# Prerequisites
 pip install httpx keyring cryptography
 
-# Deploy agent on headless Logos Core
-python scripts/agora_cli.py deploy --fund 1000
+# Run the live demo (all real)
+bash scripts/run_live_demo.sh
 
-# Or use individual commands
+# Or run individual parts
+python scripts/demo_live.py          # full 5-part demo
+python scripts/demo_real_node.py     # blockchain only
+
+# Agent CLI
 python scripts/agora_cli.py status     # agent state
 python scripts/agora_cli.py skills     # 21 registered skills
 python scripts/agora_cli.py card       # A2A Agent Card
@@ -435,7 +452,8 @@ See `docs/LP-0008-SUBMISSION.md` for full details, `docs/SKILL-SDK.md` for the S
 - [x] 3 E2E use case demos — `scripts/e2e_demos.py` (inference trade, multi-skill, owner approval)
 - [x] RISC0_DEV_MODE=0 verification — `scripts/verify_risc0.py`
 - [x] Automated video demo driver — `scripts/record_demo.sh`
-- [ ] Narrated video demo recording
+- [x] Live demo — real blockchain (Groth16 ZK), real LLM (Ollama), real P2P messaging (Waku)
+- [x] Demo video recorded — all real services, no mocks
 - [ ] Logos Blockchain mainnet launch (early 2027)
 
 ---
