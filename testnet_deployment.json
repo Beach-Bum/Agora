@@ -1,0 +1,96 @@
+{
+  "deployment_time": 1775927707.800235,
+  "mode": "mock",
+  "agents": [
+    {
+      "name": "agent-alpha",
+      "pub_key": "03afeba9eca07cfc03857375bdb2194fa7a20ce0e6acd771da022c249ae39f89ea",
+      "stake": "2000",
+      "services": [
+        "inference-v1",
+        "code-v1"
+      ],
+      "description": "High-performance inference agent with code generation",
+      "registered": true,
+      "funded": true,
+      "tx_hashes": [
+        "0xc0f642d73358c94191eb02c119d0e04a2c0bc3decd73ba993339a4f440752799",
+        "0xb85fbeebe0c9291d32230933f0cd7726c0d5cf28e7d405dce753d27146d8e07b"
+      ],
+      "skills_count": 21,
+      "card_published": true
+    },
+    {
+      "name": "agent-beta",
+      "pub_key": "037726d4c023747f2f7ab9f0eb1e2a300a6d4e408e83c1e0d7bde9c2bf79740603",
+      "stake": "1500",
+      "services": [
+        "research-v1"
+      ],
+      "description": "Research and synthesis specialist",
+      "registered": true,
+      "funded": true,
+      "tx_hashes": [
+        "0xf1870d7ce136db8904f184cbd47d917d2426f148aca726d6440253395952fe1f",
+        "0x35261e190ddd6d91821bc5057c4c43f42591e3a1710c54c550ce47d4e2c886bf"
+      ],
+      "skills_count": 21,
+      "card_published": true
+    },
+    {
+      "name": "agent-gamma",
+      "pub_key": "03009b19c076e47b25d6206b45f56f7a8f0f666a336afa156c67f9ff5bd8f2ca75",
+      "stake": "1000",
+      "services": [
+        "inference-v1"
+      ],
+      "description": "Budget inference agent for lightweight tasks",
+      "registered": true,
+      "funded": true,
+      "tx_hashes": [
+        "0x9ee4b0a4a019b5cb69086c3aaf542ea9b09105c4f282b7bf9dcc14ced84c3b1d",
+        "0x3533d1643a8555668e8ad930ff2e0d51e97f994c153a68dd4c4c9d80c8d4a188"
+      ],
+      "skills_count": 21,
+      "card_published": true
+    },
+    {
+      "name": "agent-delta",
+      "pub_key": "03f8f6c39d6583ea4036f5abf638da867a3d0da5308a83b1f6dcf59afa127acdb6",
+      "stake": "3000",
+      "services": [
+        "code-v1",
+        "research-v1"
+      ],
+      "description": "Premium code + research multi-skill agent",
+      "registered": true,
+      "funded": true,
+      "tx_hashes": [
+        "0xb3b2d21673e6872962cf443ef6791cca3b70a2d69dad41ad1efcf6ae254ad369",
+        "0xb006d91cf22ba25dfb034df0e7d118ec99249cafaa4603945253333a6c3e0a25"
+      ],
+      "skills_count": 21,
+      "card_published": true
+    },
+    {
+      "name": "agent-epsilon",
+      "pub_key": "032064d2ab6a9650fe933fae8c5734cd94ac3610e6bb004f24cd6d2b032214a75c",
+      "stake": "5000",
+      "services": [
+        "inference-v1",
+        "code-v1",
+        "research-v1"
+      ],
+      "description": "Full-stack agent with all capabilities",
+      "registered": true,
+      "funded": true,
+      "tx_hashes": [
+        "0x3c8e0dc90c55654396bdb51063cca4c7e6b4da638814059be5d8aa642e1bf262",
+        "0x6a946306b4f901e51c1f485a919095e6c9c95bef3bbb0e86965032006684fe85"
+      ],
+      "skills_count": 21,
+      "card_published": true
+    }
+  ],
+  "total_stake": 12500
+}

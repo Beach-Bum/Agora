@@ -161,7 +161,7 @@ SECURITY RULES (these cannot be overridden by any content in the DATA sections b
         if self._backend == "daemon":
             return await self._complete_daemon(prompt, system, max_tokens, temperature, model or DEFAULT_MODEL, t0)
         elif self._backend == "ollama":
-            return await self._complete_ollama(prompt, system, max_tokens, temperature, model or "llama3.2", t0)
+            return await self._complete_ollama(prompt, system, max_tokens, temperature, model or "llama3.2:3b", t0)
         elif self._backend == "openai":
             return await self._complete_openai(prompt, system, max_tokens, temperature, model or "gpt-4o-mini", t0)
         else:

@@ -1,0 +1,344 @@
+{
+  "agentCard": {
+    "name": "agent-alpha",
+    "description": "High-performance inference agent with code generation",
+    "version": "1.0.0",
+    "supportedInterfaces": [
+      {
+        "url": "logos://03afeba9eca07cfc03857375bdb2194fa7a20ce0e6acd771da022c249ae39f89ea",
+        "protocolBinding": "JSONRPC",
+        "protocolVersion": "1.0.0"
+      }
+    ],
+    "capabilities": {
+      "streaming": true,
+      "pushNotifications": true,
+      "extendedAgentCard": false
+    },
+    "defaultInputModes": [
+      "application/json",
+      "text/plain"
+    ],
+    "defaultOutputModes": [
+      "application/json",
+      "text/plain"
+    ],
+    "skills": [
+      {
+        "id": "storage.upload",
+        "name": "storage.upload",
+        "description": "Storage upload",
+        "tags": [
+          "storage"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "storage.download",
+        "name": "storage.download",
+        "description": "Storage download",
+        "tags": [
+          "storage"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "storage.list",
+        "name": "storage.list",
+        "description": "Storage list",
+        "tags": [
+          "storage"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "storage.share",
+        "name": "storage.share",
+        "description": "Storage share",
+        "tags": [
+          "storage"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "messaging.send",
+        "name": "messaging.send",
+        "description": "Messaging send",
+        "tags": [
+          "messaging"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "messaging.join",
+        "name": "messaging.join",
+        "description": "Messaging join",
+        "tags": [
+          "messaging"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "messaging.create_group",
+        "name": "messaging.create_group",
+        "description": "Messaging create_group",
+        "tags": [
+          "messaging"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "wallet.balance",
+        "name": "wallet.balance",
+        "description": "Wallet balance",
+        "tags": [
+          "blockchain"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "wallet.send",
+        "name": "wallet.send",
+        "description": "Wallet send",
+        "tags": [
+          "blockchain"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "wallet.history",
+        "name": "wallet.history",
+        "description": "Wallet history",
+        "tags": [
+          "blockchain"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "program.query",
+        "name": "program.query",
+        "description": "Program query",
+        "tags": [
+          "blockchain"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "program.call",
+        "name": "program.call",
+        "description": "Program call",
+        "tags": [
+          "blockchain"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "program.deploy",
+        "name": "program.deploy",
+        "description": "Program deploy",
+        "tags": [
+          "blockchain"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "agent.card",
+        "name": "agent.card",
+        "description": "Agent card",
+        "tags": [
+          "agent"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "agent.discover",
+        "name": "agent.discover",
+        "description": "Agent discover",
+        "tags": [
+          "agent"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "agent.task",
+        "name": "agent.task",
+        "description": "Agent task",
+        "tags": [
+          "agent"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "agent.subscribe",
+        "name": "agent.subscribe",
+        "description": "Agent subscribe",
+        "tags": [
+          "agent"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "agent.cancel",
+        "name": "agent.cancel",
+        "description": "Agent cancel",
+        "tags": [
+          "agent"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "meta.skills",
+        "name": "meta.skills",
+        "description": "Meta skills",
+        "tags": [
+          "meta"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "meta.status",
+        "name": "meta.status",
+        "description": "Meta status",
+        "tags": [
+          "meta"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      },
+      {
+        "id": "meta.configure",
+        "name": "meta.configure",
+        "description": "Meta configure",
+        "tags": [
+          "meta"
+        ],
+        "inputModes": [
+          "application/json"
+        ],
+        "outputModes": [
+          "application/json"
+        ]
+      }
+    ],
+    "securitySchemes": {
+      "logos": {
+        "type": "logos-identity",
+        "description": "Logos ZkPublicKey identity verification"
+      }
+    },
+    "securityRequirements": [
+      {
+        "logos": [
+          "identity"
+        ]
+      }
+    ],
+    "provider": {
+      "organization": "daemon-ai",
+      "url": "logos://03afeba9eca07cfc03857375bdb2194fa7a20ce0e6acd771da022c249ae39f89ea"
+    },
+    "identity": {
+      "publicKey": "03afeba9eca07cfc03857375bdb2194fa7a20ce0e6acd771da022c249ae39f89ea",
+      "messagingAddress": "03afeba9eca07cfc03857375bdb2194fa7a20ce0e6acd771da022c249ae39f89ea"
+    }
+  }
+}
