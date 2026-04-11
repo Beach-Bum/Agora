@@ -16,7 +16,7 @@ Rectangle {
 
         Text {
             text: parent.parent.label + ":"
-            color: LogosTheme.dimFg
+            color: DSTheme.dimFg
             font.family: "Menlo"
             font.pixelSize: 11
             Layout.minimumWidth: 120
@@ -24,7 +24,7 @@ Rectangle {
 
         Text {
             text: parent.parent.value
-            color: LogosTheme.cyan
+            color: DSTheme.cyan
             font.family: "Menlo"
             font.pixelSize: 11
             wrapMode: Text.WrapAnywhere
@@ -34,7 +34,7 @@ Rectangle {
 
         Text {
             text: "[copy]"
-            color: copyMouse.containsMouse ? LogosTheme.blue : LogosTheme.dimFg
+            color: copyMouse.containsMouse ? DSTheme.blue : DSTheme.dimFg
             font.family: "Menlo"
             font.pixelSize: 10
             MouseArea {

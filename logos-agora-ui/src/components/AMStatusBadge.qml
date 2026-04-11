@@ -13,10 +13,10 @@ Rectangle {
     color: "transparent"
     border.color: {
         switch (variant) {
-        case "success": return LogosTheme.cyan
-        case "warning": return LogosTheme.yellow
-        case "error":   return LogosTheme.red
-        default:        return LogosTheme.blue
+        case "success": return DSTheme.cyan
+        case "warning": return DSTheme.yellow
+        case "error":   return DSTheme.red
+        default:        return DSTheme.blue
         }
     }
     border.width: 1
@@ -40,10 +40,10 @@ Rectangle {
             font.bold: true
             color: {
                 switch (parent.parent.variant) {
-                case "success": return LogosTheme.cyan
-                case "warning": return LogosTheme.yellow
-                case "error":   return LogosTheme.red
-                default:        return LogosTheme.blue
+                case "success": return DSTheme.cyan
+                case "warning": return DSTheme.yellow
+                case "error":   return DSTheme.red
+                default:        return DSTheme.blue
                 }
             }
             anchors.verticalCenter: parent.verticalCenter
@@ -53,7 +53,7 @@ Rectangle {
             text: row.parent.text
             font.family: "Menlo"
             font.pixelSize: 11
-            color: LogosTheme.fg
+            color: DSTheme.fg
             anchors.verticalCenter: parent.verticalCenter
         }
     }

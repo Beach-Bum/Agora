@@ -17,7 +17,7 @@ Item {
     ListModel { id: txModel }
 
     Rectangle {
-        anchors.fill: parent; color: LogosTheme.bg
+        anchors.fill: parent; color: DSTheme.bg
 
         ScrollView {
             anchors.fill: parent
@@ -27,16 +27,16 @@ Item {
                 width: parent.width; anchors.topMargin: 8; anchors.leftMargin: 8; anchors.rightMargin: 8; spacing: 6
 
                 AMSectionTitle { text: "Agent Wallet" }
-                Text { text: "Identity on Logos Blockchain LSSA · Private NOM transfers via Blend Network"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                Text { text: "Identity on Logos Blockchain LSSA · Private NOM transfers via Blend Network"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
 
                 // Balance stats
                 Row {
                     spacing: 24; Layout.fillWidth: true
                     Repeater {
                         model: [
-                            { lbl: "NOM Balance", expr: "balance", clr: LogosTheme.blue },
-                            { lbl: "NOM Staked", expr: "stake", clr: LogosTheme.cyan },
-                            { lbl: "Reputation", expr: "reputation", clr: LogosTheme.yellow },
+                            { lbl: "NOM Balance", expr: "balance", clr: DSTheme.blue },
+                            { lbl: "NOM Staked", expr: "stake", clr: DSTheme.cyan },
+                            { lbl: "Reputation", expr: "reputation", clr: DSTheme.yellow },
                         ]
                         delegate: Column {
                             spacing: 2
@@ -49,15 +49,15 @@ Item {
                                 }
                                 color: modelData.clr; font.family: "Menlo"; font.pixelSize: 18; font.bold: true
                             }
-                            Text { text: modelData.lbl; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10 }
+                            Text { text: modelData.lbl; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10 }
                         }
                     }
                 }
 
-                Rectangle { Layout.fillWidth: true; height: 1; color: LogosTheme.border }
+                Rectangle { Layout.fillWidth: true; height: 1; color: DSTheme.border }
 
                 // Identity
-                Text { text: "├─ Identity ─"; color: LogosTheme.border; font.family: "Menlo"; font.pixelSize: 11 }
+                Text { text: "├─ Identity ─"; color: DSTheme.border; font.family: "Menlo"; font.pixelSize: 11 }
                 Repeater {
                     model: [
                         { lbl: "Agent ID",         valRef: "agentId" },
@@ -68,7 +68,7 @@ Item {
                     ]
                     delegate: Row {
                         spacing: 8; Layout.fillWidth: true
-                        Text { text: modelData.lbl + ":"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; width: 140 }
+                        Text { text: modelData.lbl + ":"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; width: 140 }
                         Text {
                             id: { if (modelData.valRef === "txHash") txHashText = this; if (modelData.valRef === "block") blockText = this; this }
                             text: {
@@ -81,9 +81,9 @@ Item {
                             }
                             color: {
                                 switch (modelData.valRef) {
-                                case "keystore": case "privacy": return LogosTheme.cyan
-                                case "agentId": return LogosTheme.cyan
-                                default: return LogosTheme.fg
+                                case "keystore": case "privacy": return DSTheme.cyan
+                                case "agentId": return DSTheme.cyan
+                                default: return DSTheme.fg
                                 }
                             }
                             font.family: "Menlo"; font.pixelSize: 11; wrapMode: Text.WrapAnywhere
@@ -93,35 +93,35 @@ Item {
                 property alias txHashText: _tx; property alias blockText: _bl
                 Text { id: _tx; visible: false }; Text { id: _bl; visible: false }
 
-                Rectangle { Layout.fillWidth: true; height: 1; color: LogosTheme.border }
+                Rectangle { Layout.fillWidth: true; height: 1; color: DSTheme.border }
 
                 // Trade history
-                Text { text: "├─ Recent Transactions ─"; color: LogosTheme.border; font.family: "Menlo"; font.pixelSize: 11 }
+                Text { text: "├─ Recent Transactions ─"; color: DSTheme.border; font.family: "Menlo"; font.pixelSize: 11 }
 
                 // Column header
                 Rectangle {
-                    Layout.fillWidth: true; height: 18; color: LogosTheme.statusBg
+                    Layout.fillWidth: true; height: 18; color: DSTheme.statusBg
                     Row {
                         anchors.fill: parent; anchors.leftMargin: 6; spacing: 0
-                        Text { text: " "; width: 24; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; anchors.verticalCenter: parent.verticalCenter }
-                        Text { text: "DESCRIPTION"; width: 300; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
-                        Text { text: "AMOUNT"; width: 100; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
-                        Text { text: "TIME"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                        Text { text: " "; width: 24; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; anchors.verticalCenter: parent.verticalCenter }
+                        Text { text: "DESCRIPTION"; width: 300; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                        Text { text: "AMOUNT"; width: 100; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                        Text { text: "TIME"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
                     }
                 }
 
-                Text { visible: txModel.count === 0; text: "No trades yet"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 12 }
+                Text { visible: txModel.count === 0; text: "No trades yet"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 12 }
 
                 Repeater {
                     model: txModel
                     delegate: Rectangle {
-                        Layout.fillWidth: true; height: 20; color: index % 2 === 0 ? LogosTheme.bg : LogosTheme.altBg
+                        Layout.fillWidth: true; height: 20; color: index % 2 === 0 ? DSTheme.bg : DSTheme.altBg
                         Row {
                             anchors.fill: parent; anchors.leftMargin: 6; spacing: 0
                             Text { text: model.icon || "·"; font.pixelSize: 13; width: 24; anchors.verticalCenter: parent.verticalCenter }
-                            Text { text: model.description || model.desc || "Trade"; color: LogosTheme.fg; font.family: "Menlo"; font.pixelSize: 11; width: 300; anchors.verticalCenter: parent.verticalCenter; elide: Text.ElideRight }
-                            Text { text: model.amount || "—"; color: (model.amount || "").startsWith("+") ? LogosTheme.cyan : LogosTheme.red; font.family: "Menlo"; font.pixelSize: 11; font.bold: true; width: 100; anchors.verticalCenter: parent.verticalCenter }
-                            Text { text: model.timeAgo || agora.fmtAgo(model.timestamp || 0); color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; anchors.verticalCenter: parent.verticalCenter }
+                            Text { text: model.description || model.desc || "Trade"; color: DSTheme.fg; font.family: "Menlo"; font.pixelSize: 11; width: 300; anchors.verticalCenter: parent.verticalCenter; elide: Text.ElideRight }
+                            Text { text: model.amount || "—"; color: (model.amount || "").startsWith("+") ? DSTheme.cyan : DSTheme.red; font.family: "Menlo"; font.pixelSize: 11; font.bold: true; width: 100; anchors.verticalCenter: parent.verticalCenter }
+                            Text { text: model.timeAgo || agora.fmtAgo(model.timestamp || 0); color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; anchors.verticalCenter: parent.verticalCenter }
                         }
                     }
                 }

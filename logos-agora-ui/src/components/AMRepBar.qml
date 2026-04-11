@@ -10,7 +10,7 @@ RowLayout {
 
     Text {
         text: "rep:"
-        color: LogosTheme.dimFg
+        color: DSTheme.dimFg
         font.family: "Menlo"
         font.pixelSize: 11
     }
@@ -21,7 +21,7 @@ RowLayout {
             var empty  = 20 - filled
             return "█".repeat(filled) + "░".repeat(empty)
         }
-        color: value > 0.9 ? LogosTheme.cyan : value > 0.75 ? LogosTheme.yellow : LogosTheme.red
+        color: value > 0.9 ? DSTheme.cyan : value > 0.75 ? DSTheme.yellow : DSTheme.red
         font.family: "Menlo"
         font.pixelSize: 10
         Layout.fillWidth: true
@@ -32,7 +32,7 @@ RowLayout {
         font.family: "Menlo"
         font.pixelSize: 11
         font.bold: true
-        color: value > 0.9 ? LogosTheme.cyan : value > 0.75 ? LogosTheme.yellow : LogosTheme.red
+        color: value > 0.9 ? DSTheme.cyan : value > 0.75 ? DSTheme.yellow : DSTheme.red
         Layout.minimumWidth: 42
         horizontalAlignment: Text.AlignRight
     }
@@ -41,7 +41,7 @@ RowLayout {
         text: stakeText
         font.family: "Menlo"
         font.pixelSize: 11
-        color: LogosTheme.blue
+        color: DSTheme.blue
         visible: stakeText !== ""
     }
 }

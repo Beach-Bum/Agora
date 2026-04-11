@@ -11,8 +11,8 @@ Rectangle {
     implicitHeight: 20
     radius: 0
 
-    color:        active ? LogosTheme.activeBg : mouse.containsMouse ? LogosTheme.statusBg : "transparent"
-    border.color: active ? LogosTheme.blue : LogosTheme.border
+    color:        active ? DSTheme.activeBg : mouse.containsMouse ? DSTheme.statusBg : "transparent"
+    border.color: active ? DSTheme.blue : DSTheme.border
     border.width: 1
 
     Text {
@@ -21,7 +21,7 @@ Rectangle {
         text: root.text
         font.family: "Menlo"
         font.pixelSize: 11
-        color: root.active ? LogosTheme.yellow : mouse.containsMouse ? LogosTheme.fg : LogosTheme.dimFg
+        color: root.active ? DSTheme.yellow : mouse.containsMouse ? DSTheme.fg : DSTheme.dimFg
     }
 
     MouseArea {

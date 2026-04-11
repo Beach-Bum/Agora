@@ -1,5 +1,5 @@
 module Agora.Components
-singleton LogosTheme 1.0 LogosTheme.qml
+singleton DSTheme 1.0 DSTheme.qml
 AMButton        1.0 AMButton.qml
 AMTag           1.0 AMTag.qml
 AMSectionTitle  1.0 AMSectionTitle.qml

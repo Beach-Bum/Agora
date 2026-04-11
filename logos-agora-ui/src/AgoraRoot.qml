@@ -11,20 +11,20 @@ Item {
 
     property string currentView: "marketplace"
 
-    // Colors provided by LogosTheme singleton
+    // Colors provided by DSTheme singleton
     // Local aliases for readability in this file
-    readonly property color tuiBg:       LogosTheme.bg
-    readonly property color tuiFg:       LogosTheme.fg
-    readonly property color tuiBlue:     LogosTheme.blue
-    readonly property color tuiGreen:    LogosTheme.cyan
-    readonly property color tuiYellow:   LogosTheme.yellow
-    readonly property color tuiRed:      LogosTheme.red
-    readonly property color tuiMagenta:  LogosTheme.magenta
-    readonly property color tuiCyan:     LogosTheme.cyan
-    readonly property color tuiDimFg:    LogosTheme.dimFg
-    readonly property color tuiStatusBg: LogosTheme.statusBg
-    readonly property color tuiActiveBg: LogosTheme.activeBg
-    readonly property color tuiBorder:   LogosTheme.border
+    readonly property color tuiBg:       DSTheme.bg
+    readonly property color tuiFg:       DSTheme.fg
+    readonly property color tuiBlue:     DSTheme.blue
+    readonly property color tuiGreen:    DSTheme.cyan
+    readonly property color tuiYellow:   DSTheme.yellow
+    readonly property color tuiRed:      DSTheme.red
+    readonly property color tuiMagenta:  DSTheme.magenta
+    readonly property color tuiCyan:     DSTheme.cyan
+    readonly property color tuiDimFg:    DSTheme.dimFg
+    readonly property color tuiStatusBg: DSTheme.statusBg
+    readonly property color tuiActiveBg: DSTheme.activeBg
+    readonly property color tuiBorder:   DSTheme.border
 
     // ── Route all AgoraBridge signals to the correct view ─────────
     Connections {
@@ -336,16 +336,16 @@ Item {
                         }
 
                         Repeater {
-                            model: LogosTheme.themeNames
+                            model: DSTheme.themeNames
                             delegate: Rectangle {
                                 Layout.fillWidth: true; height: 18
-                                color: LogosTheme.currentTheme === modelData ? tuiActiveBg : themeMa.containsMouse ? tuiStatusBg : "transparent"
+                                color: DSTheme.currentTheme === modelData ? tuiActiveBg : themeMa.containsMouse ? tuiStatusBg : "transparent"
 
                                 Row {
                                     anchors { fill: parent; leftMargin: 10 }
                                     spacing: 6
                                     Text {
-                                        text: LogosTheme.currentTheme === modelData ? "✓" : " "
+                                        text: DSTheme.currentTheme === modelData ? "✓" : " "
                                         color: tuiGreen
                                         font.family: "Menlo"
                                         font.pixelSize: 11
@@ -354,7 +354,7 @@ Item {
                                     }
                                     Text {
                                         text: modelData
-                                        color: LogosTheme.currentTheme === modelData ? tuiFg : tuiBlue
+                                        color: DSTheme.currentTheme === modelData ? tuiFg : tuiBlue
                                         font.family: "Menlo"
                                         font.pixelSize: 11
                                         anchors.verticalCenter: parent.verticalCenter
@@ -364,7 +364,7 @@ Item {
                                 MouseArea {
                                     id: themeMa; anchors.fill: parent
                                     hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                    onClicked: LogosTheme.setTheme(modelData)
+                                    onClicked: DSTheme.setTheme(modelData)
                                 }
                             }
                         }

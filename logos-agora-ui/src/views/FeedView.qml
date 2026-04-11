@@ -33,28 +33,28 @@ Item {
     ListModel { id: feedModel }
 
     Rectangle {
-        anchors.fill: parent; color: LogosTheme.bg
+        anchors.fill: parent; color: DSTheme.bg
 
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 8; spacing: 4
 
             AMSectionTitle { text: "Live Trade Feed" }
-            Text { text: "Real-time Agora activity via Logos Messaging · amounts private on Logos Blockchain"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+            Text { text: "Real-time Agora activity via Logos Messaging · amounts private on Logos Blockchain"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
 
             AMStatusBadge { text: "Subscribed to /agora/1/capabilities/json and /agora/1/intents/json"; variant: "info"; Layout.fillWidth: true }
 
             // Column header
             Rectangle {
-                Layout.fillWidth: true; height: 18; color: LogosTheme.statusBg
+                Layout.fillWidth: true; height: 18; color: DSTheme.statusBg
                 Row {
                     anchors.fill: parent; anchors.leftMargin: 6; spacing: 0
-                    Text { text: "TIME";   width: 60;  color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "TIME";   width: 60;  color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
                     Text { text: " ";      width: 20;  anchors.verticalCenter: parent.verticalCenter }
-                    Text { text: "EVENT";  width: 180; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
-                    Text { text: "DETAILS"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter; Layout.fillWidth: true }
+                    Text { text: "EVENT";  width: 180; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "DETAILS"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter; Layout.fillWidth: true }
                 }
             }
-            Rectangle { Layout.fillWidth: true; height: 1; color: LogosTheme.border }
+            Rectangle { Layout.fillWidth: true; height: 1; color: DSTheme.border }
 
             ListView {
                 id: feedList
@@ -64,7 +64,7 @@ Item {
 
                 delegate: Rectangle {
                     width: feedList.width; height: 20
-                    color: itemMa.containsMouse ? LogosTheme.statusBg : index % 2 === 0 ? LogosTheme.bg : LogosTheme.altBg
+                    color: itemMa.containsMouse ? DSTheme.statusBg : index % 2 === 0 ? DSTheme.bg : DSTheme.altBg
                     MouseArea { id: itemMa; anchors.fill: parent; hoverEnabled: true }
 
                     Row {
@@ -78,25 +78,25 @@ Item {
                                 if (s < 3600) return Math.floor(s/60)  + "m ago"
                                 return Math.floor(s/3600) + "h ago"
                             }
-                            color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; width: 60
+                            color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; width: 60
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         // Icon
                         Text {
                             text: model.icon; font.family: "Menlo"; font.pixelSize: 12; width: 20
-                            color: LogosTheme.yellow; anchors.verticalCenter: parent.verticalCenter
+                            color: DSTheme.yellow; anchors.verticalCenter: parent.verticalCenter
                         }
 
                         // Event title
                         Text {
-                            text: model.title; color: LogosTheme.fg; font.family: "Menlo"; font.pixelSize: 11; width: 180
+                            text: model.title; color: DSTheme.fg; font.family: "Menlo"; font.pixelSize: 11; width: 180
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
                         // Details
                         Text {
-                            text: model.sub; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10
+                            text: model.sub; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10
                             anchors.verticalCenter: parent.verticalCenter; elide: Text.ElideRight
                         }
 
@@ -104,7 +104,7 @@ Item {
 
                         // Amount
                         Text {
-                            text: model.amount; color: LogosTheme.blue; font.family: "Menlo"; font.pixelSize: 11; font.bold: true
+                            text: model.amount; color: DSTheme.blue; font.family: "Menlo"; font.pixelSize: 11; font.bold: true
                             visible: model.amount !== ""; anchors.verticalCenter: parent.verticalCenter
                         }
                     }

@@ -31,7 +31,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: LogosTheme.bg
+        color: DSTheme.bg
 
         ColumnLayout {
             anchors { fill: parent; margins: 8 }
@@ -41,7 +41,7 @@ Item {
 
             Text {
                 text: "Broadcasting via Logos Messaging · Staked on Logos Blockchain · Reputation on-chain"
-                color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11
+                color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11
                 wrapMode: Text.WordWrap; Layout.fillWidth: true
             }
 
@@ -59,27 +59,27 @@ Item {
                 Item { Layout.fillWidth: true }
                 Text {
                     text: agentModel.count + " agents online"
-                    color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11
+                    color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11
                 }
             }
 
             // Column headers
             Rectangle {
                 Layout.fillWidth: true; height: 18
-                color: LogosTheme.statusBg
+                color: DSTheme.statusBg
                 Row {
                     anchors { fill: parent; leftMargin: 6 }
                     spacing: 0
-                    Text { text: "NAME";     color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 180; anchors.verticalCenter: parent.verticalCenter }
-                    Text { text: "ID";       color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 200; anchors.verticalCenter: parent.verticalCenter }
-                    Text { text: "SERVICES"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 140; anchors.verticalCenter: parent.verticalCenter }
-                    Text { text: "PRICE";    color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 120; anchors.verticalCenter: parent.verticalCenter }
-                    Text { text: "STAKE";    color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 100; anchors.verticalCenter: parent.verticalCenter }
-                    Text { text: "REP";      color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "NAME";     color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 180; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "ID";       color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 200; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "SERVICES"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 140; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "PRICE";    color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 120; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "STAKE";    color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 100; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "REP";      color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
                 }
             }
 
-            Rectangle { Layout.fillWidth: true; height: 1; color: LogosTheme.border }
+            Rectangle { Layout.fillWidth: true; height: 1; color: DSTheme.border }
 
             ScrollView {
                 Layout.fillWidth: true; Layout.fillHeight: true
@@ -96,14 +96,14 @@ Item {
                         anchors.centerIn: parent
                         visible: agentModel.count === 0
                         text: "Scanning Logos Messaging network…"
-                        color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 12
+                        color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 12
                     }
 
                     delegate: Rectangle {
                         id: card
                         width: listView.width
                         height: col.implicitHeight + 8
-                        color: ma.containsMouse ? LogosTheme.statusBg : index % 2 === 0 ? LogosTheme.bg : LogosTheme.altBg
+                        color: ma.containsMouse ? DSTheme.statusBg : index % 2 === 0 ? DSTheme.bg : DSTheme.altBg
 
                         MouseArea { id: ma; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor }
 
@@ -117,14 +117,14 @@ Item {
                                 spacing: 0
                                 Layout.fillWidth: true
 
-                                Text { text: model.name;    color: LogosTheme.yellow; font.family: "Menlo"; font.pixelSize: 12; font.bold: true; width: 180 }
+                                Text { text: model.name;    color: DSTheme.yellow; font.family: "Menlo"; font.pixelSize: 12; font.bold: true; width: 180 }
                                 Text {
                                     text: model.agentId.length > 22 ? model.agentId.slice(0,16) + "…" + model.agentId.slice(-6) : model.agentId
-                                    color: LogosTheme.cyan; font.family: "Menlo"; font.pixelSize: 11; width: 200
+                                    color: DSTheme.cyan; font.family: "Menlo"; font.pixelSize: 11; width: 200
                                 }
-                                Text { text: model.services; color: LogosTheme.magenta; font.family: "Menlo"; font.pixelSize: 11; width: 140 }
-                                Text { text: model.price;    color: LogosTheme.blue; font.family: "Menlo"; font.pixelSize: 11; font.bold: true; width: 120 }
-                                Text { text: model.stake + " NOM"; color: LogosTheme.blue; font.family: "Menlo"; font.pixelSize: 11; width: 100 }
+                                Text { text: model.services; color: DSTheme.magenta; font.family: "Menlo"; font.pixelSize: 11; width: 140 }
+                                Text { text: model.price;    color: DSTheme.blue; font.family: "Menlo"; font.pixelSize: 11; font.bold: true; width: 120 }
+                                Text { text: model.stake + " NOM"; color: DSTheme.blue; font.family: "Menlo"; font.pixelSize: 11; width: 100 }
                             }
 
                             AMRepBar { value: model.rep; Layout.fillWidth: true }

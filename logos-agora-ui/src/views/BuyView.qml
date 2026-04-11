@@ -9,11 +9,11 @@ Item {
     property string state: "form"
 
     function appendLog(msg, color) {
-        logModel.append({ msg: msg, clr: color || LogosTheme.dimFg })
+        logModel.append({ msg: msg, clr: color || DSTheme.dimFg })
         logView.positionViewAtEnd()
     }
-    function onOffersReceived(offers) { appendLog("  " + offers.length + " offers evaluated by daemon-ai", LogosTheme.blue) }
-    function onOfferAccepted(sessionId, escrowId) { appendLog("  Escrow locked: " + escrowId.slice(0,22) + "…", LogosTheme.blue) }
+    function onOffersReceived(offers) { appendLog("  " + offers.length + " offers evaluated by daemon-ai", DSTheme.blue) }
+    function onOfferAccepted(sessionId, escrowId) { appendLog("  Escrow locked: " + escrowId.slice(0,22) + "…", DSTheme.blue) }
     function onComplete(receipt) {
         receiptCid.value    = receipt.cid        || "—"
         receiptHash.value   = receipt.outputHash || "—"
@@ -27,7 +27,7 @@ Item {
     ListModel { id: logModel }
 
     Rectangle {
-        anchors.fill: parent; color: LogosTheme.bg
+        anchors.fill: parent; color: DSTheme.bg
 
         StackLayout {
             anchors.fill: parent
@@ -40,11 +40,11 @@ Item {
                     width: parent.width; anchors.topMargin: 8; anchors.leftMargin: 8; anchors.rightMargin: 8; spacing: 6
 
                     AMSectionTitle { text: "Buy a Service" }
-                    Text { text: "daemon-ai picks the best offer · LSSA escrow · Blend Network private payment"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "daemon-ai picks the best offer · LSSA escrow · Blend Network private payment"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
 
                     // Category selector
                     Rectangle {
-                        Layout.fillWidth: true; height: 22; color: "transparent"; border.color: LogosTheme.border; border.width: 1
+                        Layout.fillWidth: true; height: 22; color: "transparent"; border.color: DSTheme.border; border.width: 1
                         Row {
                             anchors.fill: parent; anchors.margins: 1
                             Repeater {
@@ -52,8 +52,8 @@ Item {
                                 model: ["Inference","Research","Data","Code","Compute","Attestation"]
                                 delegate: Rectangle {
                                     width: categoryBox.parent.width / categoryBox.count; height: categoryBox.parent.height
-                                    color: categoryBox.currentIndex === index ? LogosTheme.activeBg : "transparent"
-                                    Text { anchors.centerIn: parent; text: modelData; font.family: "Menlo"; font.pixelSize: 11; color: categoryBox.currentIndex === index ? LogosTheme.yellow : LogosTheme.dimFg }
+                                    color: categoryBox.currentIndex === index ? DSTheme.activeBg : "transparent"
+                                    Text { anchors.centerIn: parent; text: modelData; font.family: "Menlo"; font.pixelSize: 11; color: categoryBox.currentIndex === index ? DSTheme.yellow : DSTheme.dimFg }
                                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: categoryBox.currentIndex = index }
                                 }
                             }
@@ -62,11 +62,11 @@ Item {
 
                     // Task input
                     Rectangle {
-                        Layout.fillWidth: true; height: 60; color: LogosTheme.bg; border.color: taskInput.activeFocus ? LogosTheme.blue : LogosTheme.border; border.width: 1
+                        Layout.fillWidth: true; height: 60; color: DSTheme.bg; border.color: taskInput.activeFocus ? DSTheme.blue : DSTheme.border; border.width: 1
                         TextArea {
                             id: taskInput; anchors.fill: parent; anchors.margins: 4
-                            placeholderText: "Describe the task…"; placeholderTextColor: LogosTheme.dimFg; background: null
-                            color: LogosTheme.fg; font.family: "Menlo"; font.pixelSize: 12; wrapMode: TextArea.Wrap
+                            placeholderText: "Describe the task…"; placeholderTextColor: DSTheme.dimFg; background: null
+                            color: DSTheme.fg; font.family: "Menlo"; font.pixelSize: 12; wrapMode: TextArea.Wrap
                         }
                     }
 
@@ -81,12 +81,12 @@ Item {
                             ]
                             delegate: ColumnLayout {
                                 spacing: 2; Layout.fillWidth: true
-                                Text { text: modelData.lbl; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11 }
+                                Text { text: modelData.lbl; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11 }
                                 Rectangle {
-                                    Layout.fillWidth: true; height: 22; color: LogosTheme.bg; border.color: field.activeFocus ? LogosTheme.blue : LogosTheme.border; border.width: 1
+                                    Layout.fillWidth: true; height: 22; color: DSTheme.bg; border.color: field.activeFocus ? DSTheme.blue : DSTheme.border; border.width: 1
                                     TextInput {
                                         id: field; anchors.fill: parent; anchors.margins: 4; text: modelData.val
-                                        color: LogosTheme.fg; font.family: "Menlo"; font.pixelSize: 12; horizontalAlignment: TextInput.AlignHCenter
+                                        color: DSTheme.fg; font.family: "Menlo"; font.pixelSize: 12; horizontalAlignment: TextInput.AlignHCenter
                                         Component.onCompleted: { if (modelData.id === "budget") budgetField = field }
                                     }
                                 }
@@ -110,9 +110,9 @@ Item {
             ColumnLayout {
                 anchors.fill: parent; anchors.margins: 8; spacing: 4
                 AMSectionTitle { text: "Executing Purchase" }
-                Text { text: "daemon-ai reasoning · Logos Messaging negotiation · LSSA escrow"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11 }
+                Text { text: "daemon-ai reasoning · Logos Messaging negotiation · LSSA escrow"; color: DSTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11 }
                 Rectangle {
-                    Layout.fillWidth: true; Layout.fillHeight: true; color: LogosTheme.bg; border.color: LogosTheme.border; border.width: 1
+                    Layout.fillWidth: true; Layout.fillHeight: true; color: DSTheme.bg; border.color: DSTheme.border; border.width: 1
                     ListView {
                         id: logView; anchors.fill: parent; anchors.margins: 6; model: logModel; spacing: 0; clip: true
                         delegate: Text { width: logView.width; text: model.msg; color: model.clr; font.family: "Menlo"; font.pixelSize: 11; lineHeight: 1.6; wrapMode: Text.WrapAnywhere }
@@ -128,18 +128,18 @@ Item {
                     width: parent.width; anchors.topMargin: 8; anchors.leftMargin: 8; anchors.rightMargin: 8; spacing: 6
                     AMStatusBadge { text: "Task complete · Escrow released · Reputation updated"; variant: "success"; Layout.fillWidth: true }
                     Rectangle {
-                        Layout.fillWidth: true; height: outputCol.implicitHeight + 16; color: LogosTheme.bg; border.color: LogosTheme.border; border.width: 1
+                        Layout.fillWidth: true; height: outputCol.implicitHeight + 16; color: DSTheme.bg; border.color: DSTheme.border; border.width: 1
                         ColumnLayout {
                             id: outputCol; anchors.fill: parent; anchors.margins: 8; spacing: 4
-                            Text { text: "├─ Task Output ─"; color: LogosTheme.border; font.family: "Menlo"; font.pixelSize: 11 }
-                            Text { id: outputText; text: ""; color: LogosTheme.fg; font.family: "Menlo"; font.pixelSize: 12; lineHeight: 1.5; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                            Text { text: "├─ Task Output ─"; color: DSTheme.border; font.family: "Menlo"; font.pixelSize: 11 }
+                            Text { id: outputText; text: ""; color: DSTheme.fg; font.family: "Menlo"; font.pixelSize: 12; lineHeight: 1.5; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                         }
                     }
                     Rectangle {
-                        Layout.fillWidth: true; height: settleCol.implicitHeight + 16; color: LogosTheme.bg; border.color: LogosTheme.border; border.width: 1
+                        Layout.fillWidth: true; height: settleCol.implicitHeight + 16; color: DSTheme.bg; border.color: DSTheme.border; border.width: 1
                         ColumnLayout {
                             id: settleCol; anchors.fill: parent; anchors.margins: 8; spacing: 4
-                            Text { text: "├─ Settlement Details ─"; color: LogosTheme.border; font.family: "Menlo"; font.pixelSize: 11 }
+                            Text { text: "├─ Settlement Details ─"; color: DSTheme.border; font.family: "Menlo"; font.pixelSize: 11 }
                             AMHashRow { id: receiptCid; label: "Logos Storage CID"; Layout.fillWidth: true }
                             AMHashRow { id: receiptHash; label: "Output Hash"; Layout.fillWidth: true }
                             AMHashRow { id: receiptEscrow; label: "Escrow ID"; Layout.fillWidth: true }
