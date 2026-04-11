@@ -1,0 +1,11 @@
+{
+  "name": "agora_ui",
+  "version": "1.0.0",
+  "description": "Agora UI — native Qt/QML decentralised AI agent marketplace for Logos Basecamp",
+  "author": "Agora",
+  "type": "ui",
+  "category": "marketplace",
+  "main": "agora_ui",
+  "dependencies": ["agora_module"],
+  "capabilities": []
+}

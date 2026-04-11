@@ -1,0 +1,6 @@
+module Agora.Views
+MarketplaceView  1.0 MarketplaceView.qml
+BuyView          1.0 BuyView.qml
+SellView         1.0 SellView.qml
+WalletView       1.0 WalletView.qml
+FeedView         1.0 FeedView.qml

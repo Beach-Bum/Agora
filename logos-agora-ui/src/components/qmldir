@@ -1,0 +1,9 @@
+module Agora.Components
+AMButton        1.0 AMButton.qml
+AMTag           1.0 AMTag.qml
+AMSectionTitle  1.0 AMSectionTitle.qml
+AMFilterButton  1.0 AMFilterButton.qml
+AMHashRow       1.0 AMHashRow.qml
+AMCard          1.0 AMCard.qml
+AMStatusBadge   1.0 AMStatusBadge.qml
+AMRepBar        1.0 AMRepBar.qml

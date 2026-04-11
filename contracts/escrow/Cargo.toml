@@ -1,0 +1,7 @@
+[package]
+name = "agora-escrow"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+agora-common = { path = "../common" }
