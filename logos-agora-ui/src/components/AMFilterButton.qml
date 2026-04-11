@@ -1,4 +1,4 @@
-// AMFilterButton.qml
+// AMFilterButton.qml — WeeChat TUI style filter toggle
 import QtQuick 2.15
 
 Rectangle {
@@ -7,23 +7,21 @@ Rectangle {
     property bool   active: false
     signal clicked()
 
-    implicitWidth:  label.implicitWidth + 24
-    implicitHeight: 28
-    radius: 6
+    implicitWidth:  label.implicitWidth + 12
+    implicitHeight: 20
+    radius: 0
 
-    color:        active ? "rgba(124,106,247,0.15)" : mouse.containsMouse ? "#232739" : "transparent"
-    border.color: active ? "#7c6af7" : "#2f3550"
+    color:        active ? LogosTheme.activeBg : mouse.containsMouse ? LogosTheme.statusBg : "transparent"
+    border.color: active ? LogosTheme.blue : LogosTheme.border
     border.width: 1
-
-    Behavior on color { ColorAnimation { duration: 80 } }
 
     Text {
         id: label
         anchors.centerIn: parent
         text: root.text
+        font.family: "Menlo"
         font.pixelSize: 11
-        font.weight: Font.Medium
-        color: root.active ? "#9b8eff" : mouse.containsMouse ? "#c0c4d6" : "#8b91a8"
+        color: root.active ? LogosTheme.yellow : mouse.containsMouse ? LogosTheme.fg : LogosTheme.dimFg
     }
 
     MouseArea {

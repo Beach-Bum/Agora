@@ -1,4 +1,4 @@
-// AMStatusBadge.qml
+// AMStatusBadge.qml — WeeChat TUI style status line
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 
@@ -6,24 +6,17 @@ Rectangle {
     property string text:    ""
     property string variant: "info"   // info | success | warning | error
 
-    implicitWidth:  row.implicitWidth + 20
-    implicitHeight: 34
-    radius: 6
+    implicitWidth:  row.implicitWidth + 16
+    implicitHeight: 20
+    radius: 0
 
-    color: {
-        switch (variant) {
-        case "success": return "rgba(47,182,122,0.1)"
-        case "warning": return "rgba(245,159,0,0.1)"
-        case "error":   return "rgba(224,82,82,0.1)"
-        default:        return "rgba(124,106,247,0.1)"
-        }
-    }
+    color: "transparent"
     border.color: {
         switch (variant) {
-        case "success": return "rgba(47,182,122,0.25)"
-        case "warning": return "rgba(245,159,0,0.25)"
-        case "error":   return "rgba(224,82,82,0.25)"
-        default:        return "rgba(124,106,247,0.3)"
+        case "success": return LogosTheme.cyan
+        case "warning": return LogosTheme.yellow
+        case "error":   return LogosTheme.red
+        default:        return LogosTheme.blue
         }
     }
     border.width: 1
@@ -31,32 +24,36 @@ Rectangle {
     Row {
         id: row
         anchors.centerIn: parent
-        spacing: 8
+        spacing: 6
 
-        Rectangle {
-            width: 6; height: 6; radius: 3
-            anchors.verticalCenter: parent.verticalCenter
-            color: {
+        Text {
+            text: {
                 switch (parent.parent.variant) {
-                case "success": return "#2fb67a"
-                case "warning": return "#f59f00"
-                case "error":   return "#e05252"
-                default:        return "#7c6af7"
+                case "success": return "✓"
+                case "warning": return "!"
+                case "error":   return "✗"
+                default:        return "·"
                 }
             }
+            font.family: "Menlo"
+            font.pixelSize: 12
+            font.bold: true
+            color: {
+                switch (parent.parent.variant) {
+                case "success": return LogosTheme.cyan
+                case "warning": return LogosTheme.yellow
+                case "error":   return LogosTheme.red
+                default:        return LogosTheme.blue
+                }
+            }
+            anchors.verticalCenter: parent.verticalCenter
         }
 
         Text {
-            text:           row.parent.parent.text
-            font.pixelSize: 12
-            color: {
-                switch (row.parent.parent.variant) {
-                case "success": return "#2fb67a"
-                case "warning": return "#f59f00"
-                case "error":   return "#e05252"
-                default:        return "#9b8eff"
-                }
-            }
+            text: row.parent.text
+            font.family: "Menlo"
+            font.pixelSize: 11
+            color: LogosTheme.fg
             anchors.verticalCenter: parent.verticalCenter
         }
     }

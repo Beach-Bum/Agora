@@ -1,41 +1,47 @@
-// AMRepBar.qml
+// AMRepBar.qml — WeeChat TUI style reputation bar using block characters
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 
 RowLayout {
-    property real  value:      0.0    // 0.0 – 1.0
+    property real   value:     0.0
     property string stakeText: ""
 
-    spacing: 9
+    spacing: 6
 
-    Rectangle {
-        Layout.fillWidth: true
-        height: 4
-        radius: 2
-        color:  "#252a3d"
-
-        Rectangle {
-            width:  parent.width * Math.max(0, Math.min(1, value))
-            height: 4
-            radius: 2
-            color:  value > 0.9 ? "#2fb67a" : value > 0.75 ? "#f59f00" : "#e05252"
-            Behavior on width { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
-        }
+    Text {
+        text: "rep:"
+        color: LogosTheme.dimFg
+        font.family: "Menlo"
+        font.pixelSize: 11
     }
 
     Text {
-        text:           (value * 100).toFixed(1) + "%"
+        text: {
+            var filled = Math.round(value * 20)
+            var empty  = 20 - filled
+            return "█".repeat(filled) + "░".repeat(empty)
+        }
+        color: value > 0.9 ? LogosTheme.cyan : value > 0.75 ? LogosTheme.yellow : LogosTheme.red
+        font.family: "Menlo"
+        font.pixelSize: 10
+        Layout.fillWidth: true
+    }
+
+    Text {
+        text: (value * 100).toFixed(1) + "%"
+        font.family: "Menlo"
         font.pixelSize: 11
-        font.weight:    Font.SemiBold
-        color:          value > 0.9 ? "#2fb67a" : value > 0.75 ? "#f59f00" : "#e05252"
+        font.bold: true
+        color: value > 0.9 ? LogosTheme.cyan : value > 0.75 ? LogosTheme.yellow : LogosTheme.red
         Layout.minimumWidth: 42
         horizontalAlignment: Text.AlignRight
     }
 
     Text {
-        text:           stakeText
+        text: stakeText
+        font.family: "Menlo"
         font.pixelSize: 11
-        color:          "#7c6af7"
-        visible:        stakeText !== ""
+        color: LogosTheme.blue
+        visible: stakeText !== ""
     }
 }

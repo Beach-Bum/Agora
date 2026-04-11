@@ -1,4 +1,4 @@
-// AMButton.qml
+// AMButton.qml — WeeChat TUI style button
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 
@@ -12,34 +12,28 @@ Rectangle {
 
     signal clicked()
 
-    implicitWidth:  label.implicitWidth + 32
-    implicitHeight: 36
-    radius: 6
+    implicitWidth:  label.implicitWidth + 20
+    implicitHeight: 22
+    radius: 0
     opacity: root.enabled ? 1.0 : 0.4
 
     color: {
-        if (!root.enabled)  return "transparent"
-        if (mouse.pressed)  return primary ? "#6358e0" : danger ? "rgba(224,82,82,0.15)" : "#2a2f45"
-        if (mouse.containsMouse) return primary ? "#8876ff" : danger ? "rgba(224,82,82,0.1)" : "#232739"
-        return primary ? "#7c6af7" : "transparent"
+        if (!root.enabled)       return "transparent"
+        if (mouse.pressed)       return LogosTheme.activeBg
+        if (mouse.containsMouse) return LogosTheme.statusBg
+        return "transparent"
     }
 
-    border.color: {
-        if (primary) return mouse.containsMouse ? "#8876ff" : "#7c6af7"
-        if (danger)  return "#e05252"
-        return mouse.containsMouse ? "#4a5272" : "#2f3550"
-    }
+    border.color: primary ? LogosTheme.blue : danger ? LogosTheme.red : LogosTheme.border
     border.width: 1
-
-    Behavior on color { ColorAnimation { duration: 80 } }
 
     Text {
         id: label
         anchors.centerIn: parent
-        text: root.text
-        color: root.primary ? "white" : root.danger ? "#e05252" : "#9096b0"
+        text: "[" + root.text + "]"
+        color: root.primary ? LogosTheme.blue : root.danger ? LogosTheme.red : LogosTheme.fg
+        font.family: "Menlo"
         font.pixelSize: 12
-        font.weight: Font.Medium
     }
 
     MouseArea {

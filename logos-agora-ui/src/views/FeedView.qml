@@ -1,4 +1,4 @@
-// FeedView.qml
+// FeedView.qml — WeeChat TUI style live feed (chat-like log)
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
@@ -7,117 +7,106 @@ import "../components"
 Item {
     id: root
 
-    // ── Public API ────────────────────────────────────────────────
     function addEvent(e) {
-        feedModel.insert(0, {
-            icon:  e.icon        || "◈",
-            title: e.title       || "",
-            sub:   e.sub         || "",
-            amount:e.amount      || "",
-            ts:    e.ts          || Date.now()
-        })
-        // Cap list at 100 items
+        feedModel.insert(0, { icon: e.icon || "◈", title: e.title || "", sub: e.sub || "", amount: e.amount || "", ts: e.ts || Date.now() })
         if (feedModel.count > 100) feedModel.remove(feedModel.count - 1)
     }
 
     Component.onCompleted: {
         agora.subscribeFeed()
-        // Seed with example events so the view isn't empty on first open
         var seeds = [
             { icon:"◈", title:"Capability broadcast",  sub:"NullNode Prime · inference · 0.002 NOM/token", amount:"",         ts: Date.now()-180000 },
             { icon:"↓", title:"Buy intent",            sub:"anon buyer · inference · budget 50 NOM",       amount:"",         ts: Date.now()-150000 },
-            { icon:"🤝",title:"Offer accepted",        sub:"session a1b2c3d4 · NullNode Prime",            amount:"4.20 NOM", ts: Date.now()-140000 },
-            { icon:"🔒",title:"Escrow created",        sub:"LSSA · Blend Network private",                 amount:"4.20 NOM", ts: Date.now()-139000 },
-            { icon:"📦",title:"Delivery pinned",       sub:"Logos Storage · QmXk3Np9r2…",                  amount:"",         ts: Date.now()-130000 },
+            { icon:"·", title:"Offer accepted",        sub:"session a1b2c3d4 · NullNode Prime",            amount:"4.20 NOM", ts: Date.now()-140000 },
+            { icon:"$", title:"Escrow created",        sub:"LSSA · Blend Network private",                 amount:"4.20 NOM", ts: Date.now()-139000 },
+            { icon:">", title:"Delivery pinned",       sub:"Logos Storage · QmXk3Np9r2…",                  amount:"",         ts: Date.now()-130000 },
             { icon:"✓", title:"Escrow released",       sub:"private transfer · Blend Network",             amount:"4.20 NOM", ts: Date.now()-129000 },
-            { icon:"⭐",title:"Reputation updated",    sub:"NullNode Prime · 96.1% → 96.2%",               amount:"",         ts: Date.now()-128000 },
+            { icon:"★", title:"Reputation updated",    sub:"NullNode Prime · 96.1% → 96.2%",               amount:"",         ts: Date.now()-128000 },
             { icon:"↓", title:"Buy intent",            sub:"anon buyer · research · budget 100 NOM",       amount:"",         ts: Date.now()-90000  },
-            { icon:"🤝",title:"Offer accepted",        sub:"session b5c6d7e8 · DataDaemon Alpha",          amount:"28.50 NOM",ts: Date.now()-80000  },
-            { icon:"🔒",title:"Escrow created",        sub:"LSSA · Blend Network private",                 amount:"28.50 NOM",ts: Date.now()-79000  },
+            { icon:"·", title:"Offer accepted",        sub:"session b5c6d7e8 · DataDaemon Alpha",          amount:"28.50 NOM",ts: Date.now()-80000  },
+            { icon:"$", title:"Escrow created",        sub:"LSSA · Blend Network private",                 amount:"28.50 NOM",ts: Date.now()-79000  },
         ]
         for (var i = 0; i < seeds.length; ++i) feedModel.append(seeds[i])
     }
-
     Component.onDestruction: agora.unsubscribeFeed()
 
-    // ── Model ─────────────────────────────────────────────────────
     ListModel { id: feedModel }
 
-    // ── Layout ────────────────────────────────────────────────────
-    ColumnLayout {
-        anchors { fill: parent; margins: 20 }
-        spacing: 12
+    Rectangle {
+        anchors.fill: parent; color: LogosTheme.bg
 
-        AMSectionTitle { text: "Live Trade Feed" }
-        Text {
-            text: "Real-time Agora activity via Logos Messaging · amounts private on Logos Blockchain"
-            color: "#8b91a8"; font.pixelSize: 12
-            wrapMode: Text.WordWrap; Layout.fillWidth: true
-        }
+        ColumnLayout {
+            anchors.fill: parent; anchors.margins: 8; spacing: 4
 
-        AMStatusBadge {
-            text: "Subscribed to /agora/1/capabilities/json and /agora/1/intents/json"
-            variant: "info"
-            Layout.fillWidth: true
-        }
+            AMSectionTitle { text: "Live Trade Feed" }
+            Text { text: "Real-time Agora activity via Logos Messaging · amounts private on Logos Blockchain"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11; wrapMode: Text.WordWrap; Layout.fillWidth: true }
 
-        ListView {
-            id: feedList
-            Layout.fillWidth: true; Layout.fillHeight: true
-            model: feedModel
-            spacing: 6; clip: true
-            ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+            AMStatusBadge { text: "Subscribed to /agora/1/capabilities/json and /agora/1/intents/json"; variant: "info"; Layout.fillWidth: true }
 
-            add: Transition {
-                NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 300 }
-                NumberAnimation { property: "y";       from: -8; to: 0; duration: 300; easing.type: Easing.OutCubic }
+            // Column header
+            Rectangle {
+                Layout.fillWidth: true; height: 18; color: LogosTheme.statusBg
+                Row {
+                    anchors.fill: parent; anchors.leftMargin: 6; spacing: 0
+                    Text { text: "TIME";   width: 60;  color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: " ";      width: 20;  anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "EVENT";  width: 180; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "DETAILS"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter; Layout.fillWidth: true }
+                }
             }
+            Rectangle { Layout.fillWidth: true; height: 1; color: LogosTheme.border }
 
-            delegate: Rectangle {
-                id: feedItem
-                width: feedList.width
-                height: itemRow.implicitHeight + 20
-                color:        itemMa.containsMouse ? "#1c1f2e" : "#141720"
-                border.color: itemMa.containsMouse ? "#2f3550" : "#252a3d"
-                border.width: 1; radius: 8
-                Behavior on color { ColorAnimation { duration: 80 } }
+            ListView {
+                id: feedList
+                Layout.fillWidth: true; Layout.fillHeight: true
+                model: feedModel; spacing: 0; clip: true
+                ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
-                MouseArea { id: itemMa; anchors.fill: parent; hoverEnabled: true }
+                delegate: Rectangle {
+                    width: feedList.width; height: 20
+                    color: itemMa.containsMouse ? LogosTheme.statusBg : index % 2 === 0 ? LogosTheme.bg : LogosTheme.altBg
+                    MouseArea { id: itemMa; anchors.fill: parent; hoverEnabled: true }
 
-                RowLayout {
-                    id: itemRow
-                    anchors { fill: parent; margins: 12 }
-                    spacing: 11
+                    Row {
+                        anchors.fill: parent; anchors.leftMargin: 6; spacing: 0
 
-                    Text {
-                        text:           model.icon
-                        font.pixelSize: 15
-                        Layout.preferredWidth: 22
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-
-                    Column {
-                        spacing: 3; Layout.fillWidth: true
-                        Text { text: model.title; color: "#e8eaf0"; font.pixelSize: 12; font.weight: Font.Medium }
-                        Text { text: model.sub;   color: "#555d7a"; font.pixelSize: 10; font.family: "Menlo, monospace"; wrapMode: Text.WrapAnywhere; width: parent.width }
-                    }
-
-                    Text {
-                        text:           model.amount
-                        color:          "#7c6af7"
-                        font.pixelSize: 12; font.weight: Font.Bold
-                        visible:        model.amount !== ""
-                    }
-
-                    Text {
-                        text: {
-                            var s = Math.floor((Date.now() - model.ts) / 1000)
-                            if (s < 60)   return s + "s ago"
-                            if (s < 3600) return Math.floor(s/60)  + "m ago"
-                            return Math.floor(s/3600) + "h ago"
+                        // Timestamp
+                        Text {
+                            text: {
+                                var s = Math.floor((Date.now() - model.ts) / 1000)
+                                if (s < 60)   return s + "s ago"
+                                if (s < 3600) return Math.floor(s/60)  + "m ago"
+                                return Math.floor(s/3600) + "h ago"
+                            }
+                            color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; width: 60
+                            anchors.verticalCenter: parent.verticalCenter
                         }
-                        color:          "#3a4060"
-                        font.pixelSize: 10
+
+                        // Icon
+                        Text {
+                            text: model.icon; font.family: "Menlo"; font.pixelSize: 12; width: 20
+                            color: LogosTheme.yellow; anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        // Event title
+                        Text {
+                            text: model.title; color: LogosTheme.fg; font.family: "Menlo"; font.pixelSize: 11; width: 180
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        // Details
+                        Text {
+                            text: model.sub; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10
+                            anchors.verticalCenter: parent.verticalCenter; elide: Text.ElideRight
+                        }
+
+                        Item { width: 8; height: 1 }
+
+                        // Amount
+                        Text {
+                            text: model.amount; color: LogosTheme.blue; font.family: "Menlo"; font.pixelSize: 11; font.bold: true
+                            visible: model.amount !== ""; anchors.verticalCenter: parent.verticalCenter
+                        }
                     }
                 }
             }
