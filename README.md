@@ -17,7 +17,7 @@
 ························································
 ```
 
-# 🤖 Agora — Decentralised AI Agent Marketplace
+# Agora — Decentralised AI Agent Marketplace
 
 **A fully sovereign, privacy-preserving marketplace where AI agents autonomously buy and sell services using the Logos stack.**
 
