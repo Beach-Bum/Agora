@@ -300,22 +300,47 @@ agentic-market/
 │   └── reputation/src/lib.rs      — EMA scoring, attestations
 │
 ├── agent/                         ← Python standalone agent framework
-│   ├── core/agent.py              — full buyer+seller loop
+│   ├── core/
+│   │   ├── autonomous.py          — AutonomousDaemon (SkillRegistry + OwnerChannel)
+│   │   ├── daemon_wallet.py       — wallet with SpendingPolicy + audit trail
+│   │   ├── owner_channel.py       — E2E encrypted owner communication
+│   │   └── keystore.py            — OS keychain key management
+│   ├── skills/
+│   │   ├── base.py                — Skill SDK: Skill, SkillRegistry, SkillContext
+│   │   ├── storage_skills.py      — 4 Logos Storage skills
+│   │   ├── messaging_skills.py    — 3 Logos Messaging skills
+│   │   ├── blockchain_skills.py   — 6 LEZ blockchain skills
+│   │   ├── agent_skills.py        — 5 A2A protocol skills + TaskStore
+│   │   └── meta_skills.py         — 3 meta/introspection skills
 │   ├── logos/
-│   │   ├── messaging.py           — Logos Messaging client
-│   │   ├── blockchain.py          — Logos Blockchain LSSA client
-│   │   └── storage.py             — Logos Storage client
-│   └── daemon/llm.py              — daemon-ai interface + fallback chain
+│   │   ├── messaging.py           — Logos Messaging (Waku) client
+│   │   ├── blockchain.py          — LEZ blockchain client (nomos-node API)
+│   │   └── storage.py             — Logos Storage (Codex) client
+│   ├── bridge/
+│   │   └── server.py              — HTTP bridge (QML plugin ↔ Python agent)
+│   ├── daemon/llm.py              — daemon-ai interface + fallback chain
+│   └── remoteobjects/
+│       ├── DaemonAgent.rep        — Qt Remote Objects interface definition
+│       ├── daemon_source.py       — Python Remote Objects Source adapter
+│       └── CMakeLists.txt         — Source/Replica build config
 │
 ├── docs/
 │   ├── ARCHITECTURE.md            — system design, privacy model, comparisons
 │   ├── PROTOCOL.md                — topic schema, wire format, state machine
 │   ├── CONTRACTS.md               — full LSSA contract specification
-│   └── AGENT_GUIDE.md             — setup, running nodes, troubleshooting
+│   ├── AGENT_GUIDE.md             — setup, running nodes, troubleshooting
+│   ├── LP-0008-SUBMISSION.md      — Lambda Prize requirement coverage
+│   ├── SKILL-SDK.md               — Skill SDK developer reference
+│   └── DEMO-SCRIPT.md             — video demo narration script
 │
 ├── scripts/
 │   ├── setup.sh                   — install deps, start Docker nodes
-│   └── run_agent.py               — launch agent CLI
+│   ├── run_agent.py               — launch agent CLI
+│   ├── agora_cli.py               — LP-0008 CLI: deploy, skills, invoke, card
+│   ├── testnet_deploy.py          — deploy 5 agents with identities + A2A cards
+│   ├── e2e_demos.py               — 3 E2E demos (inference, multi-skill, owner)
+│   ├── verify_risc0.py            — RISC0_DEV_MODE=0 verification
+│   └── record_demo.sh             — automated narrated video demo driver
 │
 ├── demo.html                      — standalone interactive demo
 ├── build_and_deploy.sh            — one-shot build + deploy to LogosApp.app
@@ -337,6 +362,42 @@ agentic-market/
 
 ---
 
+## LP-0008 Lambda Prize
+
+daemon-ai on Agora targets the **LP-0008 Lambda Prize ($1,200)** for demonstrating autonomous AI agents on the Logos stack.
+
+| Requirement | Status |
+|---|---|
+| Qt Remote Objects module | Done — `agent/remoteobjects/DaemonAgent.rep` |
+| Shielded LEZ account | Done — ZkPublicKey transfers via nomos-node |
+| A2A protocol v1.0.0 | Done — Agent Cards, task lifecycle, JSON-RPC over Logos Messaging |
+| E2E encrypted owner channel | Done — approval flow with timeout + retry |
+| Formal Skill SDK | Done — 21 skills across 5 categories |
+| CLI deployment | Done — `agora deploy` on headless node |
+| Spending policy + audit trail | Done — per-tx, daily cap, freeze, JSONL audit |
+| 5 testnet deployments | Done — `scripts/testnet_deploy.py` (5 agents, 12,500 NOM staked) |
+| 3 E2E use case demos | Done — `scripts/e2e_demos.py` (inference trade, multi-skill, owner approval) |
+| RISC0_DEV_MODE=0 | Done — `scripts/verify_risc0.py` (node-level, agent code clean) |
+
+### Quick Start (LP-0008)
+
+```bash
+pip install httpx keyring cryptography
+
+# Deploy agent on headless Logos Core
+python scripts/agora_cli.py deploy --fund 1000
+
+# Or use individual commands
+python scripts/agora_cli.py status     # agent state
+python scripts/agora_cli.py skills     # 21 registered skills
+python scripts/agora_cli.py card       # A2A Agent Card
+python scripts/agora_cli.py invoke wallet.balance
+```
+
+See `docs/LP-0008-SUBMISSION.md` for full details, `docs/SKILL-SDK.md` for the Skill SDK reference, and `docs/DEMO-SCRIPT.md` for the video demo script.
+
+---
+
 ## Roadmap
 
 - [x] Python agent framework with full Logos stack integrations
@@ -344,10 +405,18 @@ agentic-market/
 - [x] Native Logos Basecamp module — C++/QML (same pattern as GhostDrop)
 - [x] Interactive demo — `demo.html`
 - [x] Full documentation — ARCHITECTURE, PROTOCOL, CONTRACTS, AGENT_GUIDE
-- [ ] Implement `MessagingService.cpp`, `BlockchainService.cpp`, `StorageService.cpp`
-- [ ] Wire real Logos Messaging SDK once Python bindings stabilise
-- [ ] Deploy LSSA contracts to Logos Blockchain testnet
-- [ ] Integrate daemon-ai `coordinator.py` for multi-agent swarms
+- [x] Skill SDK — 21 pluggable skills (storage, messaging, blockchain, agent, meta)
+- [x] A2A protocol — Agent Cards, task lifecycle, transport over Logos Messaging
+- [x] Owner channel — E2E encrypted with transaction approval flow
+- [x] CLI tool — deploy, fund, status, skills, invoke, config, freeze, card
+- [x] Qt Remote Objects — DaemonAgent.rep + Source adapter
+- [x] QML plugin — 6 tabs (chat, dashboard, wallet, skills, owner, agora)
+- [x] LEZ API integration — real nomos-node endpoints (mock fallback)
+- [x] 5 testnet agent deployments — `scripts/testnet_deploy.py`
+- [x] 3 E2E use case demos — `scripts/e2e_demos.py` (inference trade, multi-skill, owner approval)
+- [x] RISC0_DEV_MODE=0 verification — `scripts/verify_risc0.py`
+- [x] Automated video demo driver — `scripts/record_demo.sh`
+- [ ] Narrated video demo recording
 - [ ] Logos Blockchain mainnet launch (early 2027)
 
 ---

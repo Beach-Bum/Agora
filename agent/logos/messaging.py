@@ -383,6 +383,73 @@ class LogosMessagingClient:
     def stop_polling(self):
         self._polling = False
 
+    # ── Skill-facing methods (LP-0008) ───────────────────────────
+
+    async def send(self, recipient: str, message: str) -> dict:
+        """Send a direct message to a Logos Messaging address."""
+        topic = f"/agora/1/dm/{recipient}/json"
+        payload = {
+            "version": "agora/1",
+            "type": "direct_message",
+            "content": message,
+            "ts": int(time.time() * 1000),
+            "nonce": secrets.token_hex(16),
+        }
+        ok = await self.publish(topic, payload)
+        return {"sent": ok, "message_id": payload["nonce"]}
+
+    async def join_group(self, group_id: str) -> dict:
+        """Join a Logos Messaging group topic."""
+        topic = f"/agora/1/group/{group_id}/json"
+        self.subscribe(topic, lambda msg: None)  # Register subscription
+        return {"joined": True, "group_id": group_id, "members": []}
+
+    async def create_group(self, members: list[str]) -> dict:
+        """Create a new group topic and invite members."""
+        import hashlib
+        group_id = hashlib.sha256(
+            (",".join(sorted(members)) + str(time.time())).encode()
+        ).hexdigest()[:16]
+        topic = f"/agora/1/group/{group_id}/json"
+        # Publish invitation to each member
+        for member in members:
+            await self.send(member, json.dumps({
+                "type": "group_invite",
+                "group_id": group_id,
+                "members": members,
+            }))
+        return {"group_id": group_id, "members": members}
+
+    async def discover_agents(self, topic: str) -> list[dict]:
+        """Fetch Agent Cards from a discovery topic."""
+        messages = await self.poll_store(
+            f"/agora/1/discovery/{topic}/json",
+            int(time.time() * 1000) - 3600_000,  # Last hour
+        )
+        cards = []
+        for msg in messages:
+            if msg.get("type") == "agent_card":
+                cards.append(msg.get("agentCard", msg))
+        return cards
+
+    async def join_encrypted_topic(self, topic_id: str, members: list[str]) -> dict:
+        """Join or create an E2E encrypted topic (for owner channel)."""
+        topic = f"/agora/1/encrypted/{topic_id}/json"
+        self.subscribe(topic, lambda msg: None)
+        return {"topic_id": topic_id, "encrypted": True, "members": members}
+
+    async def send_to_topic(self, topic_id: str, message: str) -> bool:
+        """Send a message to a specific topic."""
+        topic = f"/agora/1/encrypted/{topic_id}/json"
+        payload = {
+            "version": "agora/1",
+            "type": "topic_message",
+            "content": message,
+            "ts": int(time.time() * 1000),
+            "nonce": secrets.token_hex(16),
+        }
+        return await self.publish(topic, payload)
+
 
 # ── High-level marketplace helpers ────────────────────────────────
 

@@ -1,10 +1,23 @@
 """
 agent/logos/blockchain.py
 
-Logos Blockchain LSSA integration for Agora.
-Handles agent identity registration, private payments, and escrow contracts.
+Logos Blockchain LEZ (Logos Execution Zone) integration for Agora.
+Handles agent identity registration, shielded payments, and escrow contracts.
 
-Wraps the Logos Blockchain REST API exposed by a running Logos node.
+Wraps the LEZ HTTP API exposed by a running nomos-node.
+
+LEZ API (nomos-node):
+  POST /mempool/add/tx                      — submit a SignedMantleTx
+  GET  /wallet/:public_key/balance          — query shielded balance (notes)
+  POST /wallet/transactions/transfer-funds  — shielded token transfer
+  GET  /cryptarchia/info                    — consensus state
+  GET  /cryptarchia/headers                 — block headers (range query)
+  GET  /cryptarchia/lib-stream              — NDJSON stream of finalized blocks
+  POST /sdp/declaration                     — SDP service declaration
+  POST /channel/deposit                     — deposit into zone channel
+  GET  /channel/:id                         — query channel state
+
+Devnet: https://devnet.blockchain.logos.co/node/{0-3}/
 """
 
 import httpx
@@ -13,11 +26,19 @@ import time
 from dataclasses import dataclass
 from typing import Optional
 
+# LEZ devnet node URLs
+LEZ_DEVNET_NODES = [
+    "https://devnet.blockchain.logos.co/node/0",
+    "https://devnet.blockchain.logos.co/node/1",
+    "https://devnet.blockchain.logos.co/node/2",
+    "https://devnet.blockchain.logos.co/node/3",
+]
+
 
 @dataclass
 class AgentIdentity:
-    agent_id: str           # compressed secp256k1 pubkey hex
-    tx_hash: str            # identity NFT mint transaction
+    agent_id: str           # ZkPublicKey hex (32 bytes)
+    tx_hash: str            # identity registration transaction
     stake: str              # NOM staked (string, base units)
     block: int
     mock: bool = False
@@ -50,14 +71,14 @@ class PaymentResult:
 
 class LogosBlockchainClient:
     """
-    Client for the Logos Blockchain REST API (Logos node).
+    Client for the LEZ (Logos Execution Zone) HTTP API via nomos-node.
 
     Covers:
-    - Agent identity registration (LSSA identity contract)
-    - Private NOM transfers (Blend Network)
-    - Escrow create / release / dispute (LSSA escrow contract)
-    - Reputation reads (LSSA reputation contract)
-    - Chain state (block height, NOM balance)
+    - Agent identity registration (SDP declaration)
+    - Shielded NOM transfers (ZK note-based UTXO)
+    - Escrow create / release / dispute (LEZ program)
+    - Reputation reads (LEZ program)
+    - Chain state (Cryptarchia consensus info, balance)
 
     Degrades to mock mode when no node is reachable.
     """
@@ -67,14 +88,16 @@ class LogosBlockchainClient:
         self._mock = False
 
     async def check_node(self) -> bool:
+        """Check node health via Cryptarchia info endpoint."""
         try:
             async with httpx.AsyncClient() as client:
-                resp = await client.get(f"{self.node_url}/health", timeout=5.0)
+                # LEZ uses /cryptarchia/info as the health check
+                resp = await client.get(f"{self.node_url}/cryptarchia/info", timeout=5.0)
                 self._mock = resp.status_code != 200
         except Exception:
             self._mock = True
         status = "connected" if not self._mock else "mock mode"
-        print(f"[Logos Blockchain] Node at {self.node_url}: {status}")
+        print(f"[LEZ] Node at {self.node_url}: {status}")
         return not self._mock
 
     # ── Identity ──────────────────────────────────────────────────
@@ -316,31 +339,145 @@ class LogosBlockchainClient:
     # ── Utilities ──────────────────────────────────────────────────
 
     async def get_balance(self, agent_id: str) -> str:
-        """Get NOM balance for an agent identity."""
+        """Get NOM balance for an agent identity (ZkPublicKey)."""
         if self._mock:
             return "10000"
 
         try:
             async with httpx.AsyncClient() as client:
+                # LEZ endpoint: /wallet/:public_key/balance
                 resp = await client.get(
-                    f"{self.node_url}/lssa/balance/{agent_id}",
+                    f"{self.node_url}/wallet/{agent_id}/balance",
                     timeout=10.0,
                 )
-                return resp.json().get("balance", "0")
+                data = resp.json()
+                # LEZ returns notes-based balance; sum the values
+                if isinstance(data, list):
+                    total = sum(n.get("value", 0) for n in data)
+                    return str(total)
+                return str(data.get("value", data.get("balance", "0")))
         except Exception:
             return "0"
 
     async def get_chain_state(self) -> dict:
-        """Get current block height and chain info."""
+        """Get current consensus state from Cryptarchia."""
         if self._mock:
             return {"blockHeight": 848000 + int(time.time()) % 10000, "mock": True}
 
         try:
             async with httpx.AsyncClient() as client:
+                # LEZ endpoint: /cryptarchia/info
                 resp = await client.get(
-                    f"{self.node_url}/chain/state",
+                    f"{self.node_url}/cryptarchia/info",
                     timeout=10.0,
                 )
                 return resp.json()
         except Exception:
             return {"blockHeight": 0, "mock": True}
+
+    # ── Skill-facing methods (LP-0008) ───────────────────────────
+
+    async def send_tokens(self, recipient: str, amount: str,
+                          funding_key: str = "", change_key: str = "") -> dict:
+        """
+        Send tokens to a recipient (shielded transfer on LEZ).
+
+        LEZ endpoint: POST /wallet/transactions/transfer-funds
+        Body: {
+            funding_public_keys: [ZkPublicKey],
+            recipient_public_key: ZkPublicKey,
+            change_public_key: ZkPublicKey,
+            amount: Value,
+        }
+        """
+        if self._mock:
+            import secrets
+            return {
+                "tx_hash": "0x" + secrets.token_hex(32),
+                "amount": amount,
+                "recipient": recipient,
+                "mock": True,
+            }
+
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(
+                    f"{self.node_url}/wallet/transactions/transfer-funds",
+                    json={
+                        "funding_public_keys": [funding_key] if funding_key else [],
+                        "recipient_public_key": recipient,
+                        "change_public_key": change_key or funding_key,
+                        "amount": int(amount) if amount.isdigit() else amount,
+                    },
+                    timeout=30.0,
+                )
+                resp.raise_for_status()
+                return resp.json()
+        except Exception as e:
+            return {"tx_hash": "", "error": str(e)}
+
+    async def query_program(self, program_id: str, params: dict = None) -> dict:
+        """Read LEZ program state (no state change)."""
+        if self._mock:
+            return {"program_id": program_id, "state": {}, "mock": True}
+
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(
+                    f"{self.node_url}/program/{program_id}/query",
+                    json=params or {},
+                    timeout=15.0,
+                )
+                resp.raise_for_status()
+                return resp.json()
+        except Exception as e:
+            return {"program_id": program_id, "error": str(e)}
+
+    async def call_program(self, program_id: str, instruction: str,
+                           params: dict = None) -> dict:
+        """Submit a LEZ program transaction (state change)."""
+        if self._mock:
+            import secrets
+            return {
+                "tx_hash": "0x" + secrets.token_hex(32),
+                "program_id": program_id,
+                "instruction": instruction,
+                "mock": True,
+            }
+
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(
+                    f"{self.node_url}/program/{program_id}/call",
+                    json={"instruction": instruction, "params": params or {}},
+                    timeout=30.0,
+                )
+                resp.raise_for_status()
+                return resp.json()
+        except Exception as e:
+            return {"tx_hash": "", "error": str(e)}
+
+    async def deploy_program(self, binary_path: str) -> dict:
+        """Deploy a compiled LEZ program binary."""
+        if self._mock:
+            import secrets
+            return {
+                "program_id": "0x" + secrets.token_hex(20),
+                "tx_hash": "0x" + secrets.token_hex(32),
+                "mock": True,
+            }
+
+        try:
+            with open(binary_path, "rb") as f:
+                binary = f.read()
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(
+                    f"{self.node_url}/program/deploy",
+                    content=binary,
+                    headers={"Content-Type": "application/octet-stream"},
+                    timeout=60.0,
+                )
+                resp.raise_for_status()
+                return resp.json()
+        except Exception as e:
+            return {"program_id": "", "error": str(e)}

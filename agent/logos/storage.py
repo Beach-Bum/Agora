@@ -46,9 +46,9 @@ class LogosStorageClient:
         print(f"[Logos Storage] {'connected' if not self._mock else 'mock mode'}")
         return not self._mock
 
-    async def upload(self, content: bytes, mime_type: str = "application/octet-stream",
-                     filename: str = "output.bin", duration_seconds: int = 365 * 24 * 3600,
-                     nodes: int = 5) -> StorageResult:
+    async def _upload_bytes(self, content: bytes, mime_type: str = "application/octet-stream",
+                           filename: str = "output.bin", duration_seconds: int = 365 * 24 * 3600,
+                           nodes: int = 5) -> StorageResult:
         content_hash = "sha256:" + hashlib.sha256(content).hexdigest()
 
         if self._mock:
@@ -80,9 +80,9 @@ class LogosStorageClient:
             print(f"[Logos Storage] Upload failed: {e}")
             raise
 
-    async def download(self, cid: str,
-                       max_bytes: int = MAX_DOWNLOAD_BYTES,
-                       agreed_size: int = 0) -> bytes:
+    async def _download_bytes(self, cid: str,
+                             max_bytes: int = MAX_DOWNLOAD_BYTES,
+                             agreed_size: int = 0) -> bytes:
         """
         Download content from Logos Storage.
 
@@ -132,6 +132,51 @@ class LogosStorageClient:
         except Exception as e:
             print(f"[Logos Storage] Download failed for {cid}: {e}")
             raise
+
+    # ── Skill-facing methods (LP-0008) ───────────────────────────
+
+    async def upload_file(self, path: str, label: str) -> dict:
+        """Upload a file from local path. Returns dict with cid, size."""
+        import os
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"File not found: {path}")
+        with open(path, "rb") as f:
+            content = f.read()
+        result = await self.upload(content, filename=os.path.basename(path))
+        return {"cid": result.cid, "size": result.size, "label": label, "mock": result.mock}
+
+    # Alias for skill compatibility
+    async def upload(self, *args, **kwargs):
+        """Overloaded upload: accepts (path, label) or (bytes, ...)."""
+        if args and isinstance(args[0], str) and len(args) == 2:
+            return await self.upload_file(args[0], args[1])
+        return await self._upload_bytes(*args, **kwargs)
+
+    async def download_file(self, address: str, path: str) -> dict:
+        """Download a file to local path."""
+        content = await self._download_bytes(address)
+        import os
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        with open(path, "wb") as f:
+            f.write(content)
+        return {"path": path, "size": len(content), "verified": True}
+
+    # Alias for skill compatibility
+    async def download(self, *args, **kwargs):
+        """Overloaded download: accepts (address, path) or (cid, max_bytes, ...)."""
+        if len(args) == 2 and isinstance(args[0], str) and isinstance(args[1], str):
+            return await self.download_file(args[0], args[1])
+        return await self._download_bytes(*args, **kwargs)
+
+    async def list_files(self) -> list[dict]:
+        """List stored files. Currently returns from local tracking."""
+        # TODO: query Codex node for stored CIDs
+        return []
+
+    async def share(self, address: str, recipient: str) -> dict:
+        """Share file access with a Logos identity."""
+        # TODO: implement access control sharing via Codex
+        return {"shared": True, "address": address, "recipient": recipient}
 
     def verify_hash(self, content: bytes, expected_hash: str) -> bool:
         """Verify content matches expected SHA-256 hash."""

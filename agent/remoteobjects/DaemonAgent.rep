@@ -1,0 +1,61 @@
+// DaemonAgent.rep — Qt Remote Objects interface definition
+// LP-0008: Defines the daemon-ai agent interface for Basecamp integration
+// Compiled with repc to generate source/replica classes
+
+class DaemonAgent {
+    // ── Identity ────────────────────────────────────────────────
+    PROP(QString agentId READ)
+    PROP(QString agentName READ)
+
+    // ── Status ──────────────────────────────────────────────────
+    PROP(bool connected READ)
+    PROP(QString backend READ)
+    PROP(QString currentModel READ)
+    PROP(int totalTokens READ)
+    PROP(bool daemonRunning READ)
+    PROP(int uptimeSeconds READ)
+
+    // ── Wallet ──────────────────────────────────────────────────
+    PROP(double walletBalance READ)
+    PROP(double walletAvailable READ)
+    PROP(double walletEarned READ)
+    PROP(bool walletFrozen READ)
+    PROP(double policyMaxPerTx READ)
+    PROP(double policyDailyCap READ)
+
+    // ── Stats ───────────────────────────────────────────────────
+    PROP(int tasksCompleted READ)
+    PROP(int tasksFailed READ)
+    PROP(int offersSent READ)
+    PROP(int intentsEvaluated READ)
+    PROP(int skillCount READ)
+
+    // ── Chat ────────────────────────────────────────────────────
+    SLOT(QString chat(QString message))
+
+    // ── Wallet Operations ───────────────────────────────────────
+    SLOT(QString fundWallet(double amount))
+    SLOT(bool freezeWallet())
+    SLOT(bool unfreezeWallet())
+    SLOT(QString updatePolicy(QString key, QString value))
+
+    // ── Skill SDK ───────────────────────────────────────────────
+    SLOT(QString listSkills(QString category))
+    SLOT(QString invokeSkill(QString name, QString paramsJson))
+
+    // ── Owner Channel ───────────────────────────────────────────
+    SLOT(bool ownerApprove(QString requestId))
+    SLOT(bool ownerDeny(QString requestId))
+    SLOT(QString ownerPending())
+    SLOT(bool ownerChat(QString message))
+
+    // ── A2A ─────────────────────────────────────────────────────
+    SLOT(QString agentCard())
+
+    // ── Signals ─────────────────────────────────────────────────
+    SIGNAL(chatResponse(QString role, QString content, QString model, int tokens))
+    SIGNAL(walletUpdated(double balance, double earned, bool frozen))
+    SIGNAL(eventReceived(QString event, QString level, QString message))
+    SIGNAL(approvalRequired(QString requestId, QString action, double amount, QString description))
+    SIGNAL(skillCompleted(QString name, bool success, QString resultJson))
+}
