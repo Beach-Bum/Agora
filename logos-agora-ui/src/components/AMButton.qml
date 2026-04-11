@@ -19,19 +19,19 @@ Rectangle {
 
     color: {
         if (!root.enabled)       return "transparent"
-        if (mouse.pressed)       return LogosTheme.activeBg
-        if (mouse.containsMouse) return LogosTheme.statusBg
+        if (mouse.pressed)       return DSTheme.activeBg
+        if (mouse.containsMouse) return DSTheme.statusBg
         return "transparent"
     }
 
-    border.color: primary ? LogosTheme.blue : danger ? LogosTheme.red : LogosTheme.border
+    border.color: primary ? DSTheme.blue : danger ? DSTheme.red : DSTheme.border
     border.width: 1
 
     Text {
         id: label
         anchors.centerIn: parent
         text: "[" + root.text + "]"
-        color: root.primary ? LogosTheme.blue : root.danger ? LogosTheme.red : LogosTheme.fg
+        color: root.primary ? DSTheme.blue : root.danger ? DSTheme.red : DSTheme.fg
         font.family: "Menlo"
         font.pixelSize: 12
     }

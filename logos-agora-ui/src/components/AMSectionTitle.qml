@@ -10,20 +10,20 @@ RowLayout {
 
     Text {
         text: "├─ "
-        color: LogosTheme.border
+        color: DSTheme.border
         font.family: "Menlo"
         font.pixelSize: parent.small ? 12 : 13
     }
     Text {
         text: parent.text
-        color: LogosTheme.fg
+        color: DSTheme.fg
         font.family: "Menlo"
         font.pixelSize: parent.small ? 12 : 13
         font.bold: true
     }
     Text {
         text: " ─"
-        color: LogosTheme.border
+        color: DSTheme.border
         font.family: "Menlo"
         font.pixelSize: parent.small ? 12 : 13
         Layout.fillWidth: true

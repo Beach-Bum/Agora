@@ -8,14 +8,14 @@ Rectangle {
     implicitHeight: 18
     radius: 0
     color: "transparent"
-    border.color: LogosTheme.border
+    border.color: DSTheme.border
     border.width: 1
 
     Text {
         id: label
         anchors.centerIn: parent
         text: parent.text
-        color: LogosTheme.cyan
+        color: DSTheme.cyan
         font.family: "Menlo"
         font.pixelSize: 10
     }

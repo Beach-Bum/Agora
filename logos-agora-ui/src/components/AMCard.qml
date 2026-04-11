@@ -5,8 +5,8 @@ Rectangle {
     default property alias content: inner.data
     property string title: ""
 
-    color:        LogosTheme.bg
-    border.color: LogosTheme.border
+    color:        DSTheme.bg
+    border.color: DSTheme.border
     border.width: 1
     radius:       0
 

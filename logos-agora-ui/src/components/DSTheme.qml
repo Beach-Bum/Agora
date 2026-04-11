@@ -1,9 +1,9 @@
 pragma Singleton
 import QtQuick 2.15
 
-// LogosTheme.qml — Centralized theme system for Logos Basecamp modules
+// DSTheme.qml — Centralized theme system for Logos Basecamp modules
 // 5 themes: default, solarized, nord, dracula, monokai
-// Usage: LogosTheme.bg, LogosTheme.blue, LogosTheme.setTheme("nord")
+// Usage: DSTheme.bg, DSTheme.blue, DSTheme.setTheme("nord")
 QtObject {
     id: root
 
