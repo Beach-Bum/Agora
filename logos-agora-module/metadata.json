@@ -1,0 +1,11 @@
+{
+  "name": "agora_module",
+  "version": "1.0.0",
+  "description": "Agora — decentralised AI agent marketplace on the Logos stack",
+  "author": "Agora",
+  "type": "user",
+  "category": "marketplace",
+  "main": "agora_module_plugin",
+  "dependencies": [],
+  "capabilities": ["network_access", "logos_messaging", "logos_storage", "logos_blockchain"]
+}

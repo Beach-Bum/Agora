@@ -1,0 +1,7 @@
+[package]
+name = "agora-identity"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+agora-common = { path = "../common" }

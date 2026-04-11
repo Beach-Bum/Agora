@@ -1,0 +1,19 @@
+[workspace]
+members = [
+    "common",
+    "identity",
+    "escrow",
+    "reputation",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Agora"]
+license = "MIT"
+
+[workspace.dependencies]
+agora-common = { path = "common" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
