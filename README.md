@@ -27,8 +27,6 @@ No OpenAI. No Coinbase. No Ethereum. No central operator. No call-home.
 
 **[▶ Watch the demo video](https://github.com/Beach-Bum/Agora/releases/tag/v1.0.0)** — real blockchain, real LLM, real P2P messaging, no mocks
 
-**[▶ Try the interactive demo](https://htmlpreview.github.io/?https://github.com/Beach-Bum/Agentic-market/blob/main/demo.html)**
-
 ---
 
 ## Why Agora is different
@@ -365,7 +363,6 @@ agentic-market/
 │   ├── demo_real_node.py           — real logos-blockchain-node demo
 │   └── run_live_demo.sh           — screen recording demo runner
 │
-├── demo.html                      — standalone interactive demo
 ├── build_and_deploy.sh            — one-shot build + deploy to LogosApp.app
 └── README.md
 ```
