@@ -1,4 +1,4 @@
-// MarketplaceView.qml
+// MarketplaceView.qml — WeeChat TUI style
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
@@ -7,7 +7,6 @@ import "../components"
 Item {
     id: root
 
-    // ── Public API ────────────────────────────────────────────────
     function populate(agentList) {
         agentModel.clear()
         for (var i = 0; i < agentList.length; ++i) {
@@ -30,98 +29,106 @@ Item {
 
     ListModel { id: agentModel }
 
-    // ── Layout ────────────────────────────────────────────────────
-    ColumnLayout {
-        anchors { fill: parent; margins: 20 }
-        spacing: 12
+    Rectangle {
+        anchors.fill: parent
+        color: LogosTheme.bg
 
-        AMSectionTitle { text: "Active Agents" }
+        ColumnLayout {
+            anchors { fill: parent; margins: 8 }
+            spacing: 4
 
-        Text {
-            text: "Broadcasting via Logos Messaging · Staked on Logos Blockchain · Reputation on-chain"
-            color: "#8b91a8"; font.pixelSize: 12
-            wrapMode: Text.WordWrap; Layout.fillWidth: true
-        }
+            AMSectionTitle { text: "Active Agents" }
 
-        RowLayout {
-            spacing: 6; Layout.fillWidth: true
-
-            Repeater {
-                model: ["All","Inference","Research","Data","Code","Compute"]
-                delegate: AMFilterButton {
-                    text:   modelData
-                    active: root.activeFilter === modelData
-                    onClicked: { root.activeFilter = modelData; agora.loadMarketplace() }
-                }
-            }
-            Item { Layout.fillWidth: true }
             Text {
-                text:           agentModel.count + " agents online"
-                color:          "#555d7a"; font.pixelSize: 11
+                text: "Broadcasting via Logos Messaging · Staked on Logos Blockchain · Reputation on-chain"
+                color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11
+                wrapMode: Text.WordWrap; Layout.fillWidth: true
             }
-        }
 
-        ScrollView {
-            Layout.fillWidth: true; Layout.fillHeight: true
-            clip: true
-            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+            RowLayout {
+                spacing: 4; Layout.fillWidth: true
 
-            ListView {
-                id: listView
-                width: parent.width
-                model: agentModel
-                spacing: 8; clip: true
-
-                Text {
-                    anchors.centerIn: parent
-                    visible: agentModel.count === 0
-                    text: "Scanning Logos Messaging network…"
-                    color: "#555d7a"; font.pixelSize: 12
+                Repeater {
+                    model: ["All","Inference","Research","Data","Code","Compute"]
+                    delegate: AMFilterButton {
+                        text:   modelData
+                        active: root.activeFilter === modelData
+                        onClicked: { root.activeFilter = modelData; agora.loadMarketplace() }
+                    }
                 }
+                Item { Layout.fillWidth: true }
+                Text {
+                    text: agentModel.count + " agents online"
+                    color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 11
+                }
+            }
 
-                delegate: Rectangle {
-                    id: card
-                    width: listView.width
-                    height: col.implicitHeight + 24
-                    color:        ma.containsMouse ? "#1c1f2e" : "#141720"
-                    border.color: ma.containsMouse ? "#3a4060" : "#252a3d"
-                    border.width: 1; radius: 10
-                    Behavior on color        { ColorAnimation { duration: 80 } }
-                    Behavior on border.color { ColorAnimation { duration: 80 } }
+            // Column headers
+            Rectangle {
+                Layout.fillWidth: true; height: 18
+                color: LogosTheme.statusBg
+                Row {
+                    anchors { fill: parent; leftMargin: 6 }
+                    spacing: 0
+                    Text { text: "NAME";     color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 180; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "ID";       color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 200; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "SERVICES"; color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 140; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "PRICE";    color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 120; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "STAKE";    color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; width: 100; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: "REP";      color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 10; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
+                }
+            }
 
-                    MouseArea { id: ma; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor }
+            Rectangle { Layout.fillWidth: true; height: 1; color: LogosTheme.border }
 
-                    ColumnLayout {
-                        id: col
-                        anchors { fill: parent; margins: 14 }
-                        spacing: 8
+            ScrollView {
+                Layout.fillWidth: true; Layout.fillHeight: true
+                clip: true
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
-                        RowLayout {
-                            Layout.fillWidth: true
-                            Text { text: model.name; color: "#e8eaf0"; font.pixelSize: 13; font.weight: Font.Bold; Layout.fillWidth: true }
-                            Column {
-                                spacing: 2
-                                Text { text: model.price;   color: "#7c6af7"; font.pixelSize: 12; font.weight: Font.Bold; horizontalAlignment: Text.AlignRight }
-                                Text { text: model.latency; color: "#555d7a"; font.pixelSize: 10; horizontalAlignment: Text.AlignRight }
+                ListView {
+                    id: listView
+                    width: parent.width
+                    model: agentModel
+                    spacing: 0; clip: true
+
+                    Text {
+                        anchors.centerIn: parent
+                        visible: agentModel.count === 0
+                        text: "Scanning Logos Messaging network…"
+                        color: LogosTheme.dimFg; font.family: "Menlo"; font.pixelSize: 12
+                    }
+
+                    delegate: Rectangle {
+                        id: card
+                        width: listView.width
+                        height: col.implicitHeight + 8
+                        color: ma.containsMouse ? LogosTheme.statusBg : index % 2 === 0 ? LogosTheme.bg : LogosTheme.altBg
+
+                        MouseArea { id: ma; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor }
+
+                        ColumnLayout {
+                            id: col
+                            anchors { fill: parent; margins: 6 }
+                            spacing: 2
+
+                            // Main row
+                            Row {
+                                spacing: 0
+                                Layout.fillWidth: true
+
+                                Text { text: model.name;    color: LogosTheme.yellow; font.family: "Menlo"; font.pixelSize: 12; font.bold: true; width: 180 }
+                                Text {
+                                    text: model.agentId.length > 22 ? model.agentId.slice(0,16) + "…" + model.agentId.slice(-6) : model.agentId
+                                    color: LogosTheme.cyan; font.family: "Menlo"; font.pixelSize: 11; width: 200
+                                }
+                                Text { text: model.services; color: LogosTheme.magenta; font.family: "Menlo"; font.pixelSize: 11; width: 140 }
+                                Text { text: model.price;    color: LogosTheme.blue; font.family: "Menlo"; font.pixelSize: 11; font.bold: true; width: 120 }
+                                Text { text: model.stake + " NOM"; color: LogosTheme.blue; font.family: "Menlo"; font.pixelSize: 11; width: 100 }
                             }
-                        }
 
-                        Text {
-                            text: model.agentId.length > 26 ? model.agentId.slice(0,20)+"…"+model.agentId.slice(-6) : model.agentId
-                            color: "#38b2ac"; font.pixelSize: 10; font.family: "Menlo, monospace"
+                            AMRepBar { value: model.rep; Layout.fillWidth: true }
                         }
-
-                        RowLayout {
-                            spacing: 6; Layout.fillWidth: true
-                            Repeater {
-                                model: card.ListView.view.model.get(index).services.split(", ")
-                                delegate: AMTag { text: modelData }
-                            }
-                            Item { Layout.fillWidth: true }
-                            Text { text: model.stake + " NOM staked"; color: "#7c6af7"; font.pixelSize: 11 }
-                        }
-
-                        AMRepBar { value: model.rep; Layout.fillWidth: true }
                     }
                 }
             }

@@ -1,4 +1,4 @@
-// AgoraRoot.qml — Agora Logos Basecamp module root
+// AgoraRoot.qml — Agora Logos Basecamp module root (WeeChat TUI style)
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
@@ -11,24 +11,31 @@ Item {
 
     property string currentView: "marketplace"
 
+    // Colors provided by LogosTheme singleton
+    // Local aliases for readability in this file
+    readonly property color tuiBg:       LogosTheme.bg
+    readonly property color tuiFg:       LogosTheme.fg
+    readonly property color tuiBlue:     LogosTheme.blue
+    readonly property color tuiGreen:    LogosTheme.cyan
+    readonly property color tuiYellow:   LogosTheme.yellow
+    readonly property color tuiRed:      LogosTheme.red
+    readonly property color tuiMagenta:  LogosTheme.magenta
+    readonly property color tuiCyan:     LogosTheme.cyan
+    readonly property color tuiDimFg:    LogosTheme.dimFg
+    readonly property color tuiStatusBg: LogosTheme.statusBg
+    readonly property color tuiActiveBg: LogosTheme.activeBg
+    readonly property color tuiBorder:   LogosTheme.border
+
     // ── Route all AgoraBridge signals to the correct view ─────────
     Connections {
         target: agora
-
-        // Status
-        function onStatusChanged()     { }   // sidebar dots update via Q_PROPERTY bindings
-
-        // Identity
-        function onAgentRegistered(record) { sidebar.updateAgent() }
-        function onAgentStatus(status)     { sidebar.updateAgent() }
-        function onAgentChanged()          { sidebar.updateAgent() }
-
-        // Marketplace
+        function onStatusChanged()     { }
+        function onAgentRegistered(record) { }
+        function onAgentStatus(status)     { }
+        function onAgentChanged()          { }
         function onMarketplaceLoaded(agents) {
             if (marketplaceLoader.item) marketplaceLoader.item.populate(agents)
         }
-
-        // Buy flow
         function onOffersReceived(offers) {
             if (buyLoader.item)  buyLoader.item.onOffersReceived(offers)
         }
@@ -44,10 +51,7 @@ Item {
         function onBuyError(error) {
             if (buyLoader.item) buyLoader.item.onError(error)
         }
-
-        // Sell flow
         function onIntentReceived(intent) {
-            // Switch to sell view and show the intent
             switchView("sell")
             if (sellLoader.item) sellLoader.item.onIntentReceived(intent)
         }
@@ -63,16 +67,12 @@ Item {
         function onTaskComplete(result) {
             if (sellLoader.item) sellLoader.item.onTaskComplete(result)
         }
-
-        // Wallet
         function onWalletState(state) {
             if (walletLoader.item) walletLoader.item.setState(state)
         }
         function onTradeHistory(trades) {
             if (walletLoader.item) walletLoader.item.setHistory(trades)
         }
-
-        // Feed
         function onFeedEvent(event) {
             if (feedLoader.item) feedLoader.item.addEvent(event)
         }
@@ -83,276 +83,454 @@ Item {
     }
 
     // ── Main layout ───────────────────────────────────────────────
-    RowLayout {
+    Rectangle {
         anchors.fill: parent
-        spacing: 0
+        color: tuiBg
 
-        // ── Sidebar ───────────────────────────────────────────────
-        Rectangle {
-            id: sidebar
-            Layout.preferredWidth: 224
-            Layout.fillHeight: true
-            color: "#0f1119"
-
-            function updateAgent() {
-                agentIdLabel.text  = agora.agentId.length > 0 ? agora.agentId.slice(0,18)+"…" : "Not registered"
-                balanceLabel.text  = (agora.balance || "—") + " NOM"
-                repLabel.text      = agora.reputation > 0 ? (agora.reputation * 100).toFixed(1) + "%" : "—"
-            }
-
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 0
-
-                // Logo
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 64
-                    color: "transparent"
-
-                    Rectangle {
-                        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-                        height: 1; color: "#1e2438"
-                    }
-
-                    RowLayout {
-                        anchors { fill: parent; margins: 16 }
-                        spacing: 11
-
-                        Rectangle {
-                            width: 34; height: 34; radius: 9
-                            gradient: Gradient {
-                                orientation: Gradient.Horizontal
-                                GradientStop { position: 0.0; color: "rgba(124,106,247,0.25)" }
-                                GradientStop { position: 1.0; color: "rgba(124,106,247,0.08)" }
-                            }
-                            border.color: "rgba(124,106,247,0.2)"; border.width: 1
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "⟡"; font.pixelSize: 17; color: "#9b8eff"
-                            }
-                        }
-
-                        Column {
-                            spacing: 3
-                            Text { text: "Agora";             color: "#e8eaf0"; font.pixelSize: 15; font.weight: Font.Bold; font.letterSpacing: -0.3 }
-                            Text { text: "Sovereign marketplace"; color: "#353c57"; font.pixelSize: 10 }
-                        }
-                    }
-                }
-
-                // Nav
-                Item { Layout.preferredHeight: 8 }
-
-                Repeater {
-                    model: [
-                        { view:"marketplace", icon:"◈", label:"Marketplace",  sub:"Browse agents"    },
-                        { view:"buy",         icon:"↓", label:"Buy Service",  sub:"Hire an agent"    },
-                        { view:"sell",        icon:"↑", label:"Sell Service", sub:"Earn NOM"         },
-                        { view:"wallet",      icon:"◎", label:"Wallet",       sub:"Identity & stake" },
-                        { view:"feed",        icon:"≋", label:"Live Feed",    sub:"Recent trades"    },
-                    ]
-                    delegate: Rectangle {
-                        Layout.fillWidth: true; height: 50
-                        color: "transparent"
-
-                        Rectangle {
-                            anchors { fill: parent; leftMargin: 8; rightMargin: 8; topMargin: 1; bottomMargin: 1 }
-                            radius: 7
-                            color: root.currentView === modelData.view
-                                   ? "rgba(124,106,247,0.14)" : navMa.containsMouse
-                                   ? "#1c1f2e" : "transparent"
-                            border.color: root.currentView === modelData.view ? "rgba(124,106,247,0.2)" : "transparent"
-                            border.width: 1
-                            Behavior on color { ColorAnimation { duration: 80 } }
-
-                            RowLayout {
-                                anchors { fill: parent; leftMargin: 12; rightMargin: 8 }
-                                spacing: 10
-
-                                Text {
-                                    text:           modelData.icon
-                                    font.pixelSize: 14
-                                    color:          root.currentView === modelData.view ? "#9b8eff" : "#555d7a"
-                                    Layout.preferredWidth: 18
-                                    horizontalAlignment: Text.AlignHCenter
-                                }
-
-                                Column {
-                                    spacing: 2; Layout.fillWidth: true
-                                    Text {
-                                        text:           modelData.label
-                                        font.pixelSize: 12; font.weight: Font.Medium
-                                        color:          root.currentView === modelData.view ? "#9b8eff" : "#9096b0"
-                                    }
-                                    Text {
-                                        text:           modelData.sub
-                                        font.pixelSize: 10
-                                        color:          root.currentView === modelData.view ? "rgba(124,106,247,0.45)" : "#353c57"
-                                    }
-                                }
-                            }
-                        }
-
-                        MouseArea {
-                            id: navMa; anchors.fill: parent
-                            hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                root.switchView(modelData.view)
-                                if (modelData.view === "wallet") agora.getWalletState()
-                                if (modelData.view === "feed")   agora.subscribeFeed()
-                            }
-                        }
-                    }
-                }
-
-                Item { Layout.fillHeight: true }
-
-                // Agent quick stats
-                Rectangle {
-                    Layout.fillWidth: true; height: 72
-                    color: "#08090f"
-                    Rectangle { anchors.top: parent.top; Layout.fillWidth: true; width: parent.width; height: 1; color: "#1e2438" }
-
-                    ColumnLayout {
-                        anchors { fill: parent; margins: 14 }
-                        spacing: 5
-                        Text { id: agentIdLabel; text: "Not registered"; color: "#353c57"; font.pixelSize: 10; font.family: "Menlo, monospace"; elide: Text.ElideMiddle; Layout.fillWidth: true }
-                        RowLayout {
-                            Text { id: balanceLabel; text: "— NOM";  color: "#7c6af7"; font.pixelSize: 12; font.weight: Font.SemiBold }
-                            Item { Layout.fillWidth: true }
-                            Text { id: repLabel;     text: "—";       color: "#2fb67a"; font.pixelSize: 12; font.weight: Font.SemiBold }
-                        }
-                    }
-                }
-
-                // Stack status
-                Rectangle {
-                    Layout.fillWidth: true; height: 96
-                    color: "#060810"
-                    Rectangle { anchors.top: parent.top; width: parent.width; height: 1; color: "#1e2438" }
-
-                    ColumnLayout {
-                        anchors { fill: parent; margins: 14 }
-                        spacing: 6
-
-                        Text { text: "STACK"; color: "#353c57"; font.pixelSize: 9; font.letterSpacing: 1.6 }
-
-                        Repeater {
-                            model: [
-                                { label:"Logos Messaging",  prop:"messagingStatus"  },
-                                { label:"Logos Blockchain", prop:"blockchainStatus" },
-                                { label:"Logos Storage",    prop:"storageStatus"    },
-                                { label:"daemon-ai",        prop:"daemonAIStatus"   },
-                            ]
-                            delegate: RowLayout {
-                                Layout.fillWidth: true; spacing: 7
-                                Rectangle {
-                                    width: 6; height: 6; radius: 3
-                                    color: {
-                                        var s = agora[modelData.prop] || ""
-                                        if (s === "live"  || s === "local") return "#2fb67a"
-                                        if (s === "mock")                   return "#f59f00"
-                                        return "#3a4060"
-                                    }
-                                    SequentialAnimation on opacity {
-                                        loops: Animation.Infinite
-                                        NumberAnimation { to: 0.3; duration: 1000 }
-                                        NumberAnimation { to: 1.0; duration: 1000 }
-                                    }
-                                }
-                                Text { text: modelData.label; color: "#555d7a"; font.pixelSize: 10; Layout.fillWidth: true }
-                                Text { text: agora[modelData.prop] || "…"; color: "#353c57"; font.pixelSize: 9 }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // ── Main content area ─────────────────────────────────────
         ColumnLayout {
-            Layout.fillWidth: true; Layout.fillHeight: true
+            anchors.fill: parent
             spacing: 0
 
-            // Top bar
+            // ── Top Title Bar ─────────────────────────────────────
             Rectangle {
-                Layout.fillWidth: true; height: 50
-                color: "#0f1119"
-                Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: "#1e2438" }
+                Layout.fillWidth: true
+                height: 22
+                color: tuiStatusBg
 
                 RowLayout {
-                    anchors { fill: parent; leftMargin: 22; rightMargin: 22 }
+                    anchors { fill: parent; leftMargin: 8; rightMargin: 8 }
+                    spacing: 0
 
                     Text {
-                        text: ({
-                            marketplace: "Marketplace",
-                            buy:         "Buy Service",
-                            sell:        "Sell Service",
-                            wallet:      "Agent Wallet",
-                            feed:        "Live Feed"
-                        })[root.currentView] || ""
-                        color: "#e8eaf0"; font.pixelSize: 14; font.weight: Font.Bold; font.letterSpacing: -0.2
+                        text: "⟡ Agora"
+                        color: tuiYellow
+                        font.family: "Menlo"
+                        font.pixelSize: 12
+                        font.bold: true
+                    }
+                    Text {
+                        text: " │ "
+                        color: tuiBorder
+                        font.family: "Menlo"
+                        font.pixelSize: 12
+                    }
+                    Text {
+                        text: "v1.0.0"
+                        color: tuiDimFg
+                        font.family: "Menlo"
+                        font.pixelSize: 12
                     }
 
                     Item { Layout.fillWidth: true }
 
+                    // Stack status indicators
                     Repeater {
                         model: [
-                            { label:"Logos Messaging",  prop:"messagingStatus"  },
-                            { label:"Logos Blockchain", prop:"blockchainStatus" },
-                            { label:"daemon-ai",        prop:"daemonAIStatus"   },
+                            { label: "msg",    prop: "messagingStatus"  },
+                            { label: "chain",  prop: "blockchainStatus" },
+                            { label: "store",  prop: "storageStatus"    },
+                            { label: "daemon", prop: "daemonAIStatus"   },
                         ]
-                        delegate: RowLayout {
-                            spacing: 5
-                            Rectangle {
-                                width: 6; height: 6; radius: 3
+                        delegate: Row {
+                            spacing: 2
+                            Text {
+                                text: " │ "
+                                color: tuiBorder
+                                font.family: "Menlo"
+                                font.pixelSize: 12
+                            }
+                            Text {
+                                text: modelData.label + ":"
+                                color: tuiDimFg
+                                font.family: "Menlo"
+                                font.pixelSize: 12
+                            }
+                            Text {
+                                text: {
+                                    var s = agora[modelData.prop] || ""
+                                    return s || "…"
+                                }
                                 color: {
                                     var s = agora[modelData.prop] || ""
-                                    if (s === "live" || s === "local") return "#2fb67a"
-                                    return "#f59f00"
+                                    if (s === "live" || s === "local") return tuiGreen
+                                    if (s === "mock" || s === "testnet") return tuiYellow
+                                    return tuiDimFg
                                 }
+                                font.family: "Menlo"
+                                font.pixelSize: 12
                             }
-                            Text { text: modelData.label; color: "#353c57"; font.pixelSize: 11 }
                         }
                     }
                 }
             }
 
-            // View loaders — only the active view is loaded
-            Item {
-                Layout.fillWidth: true; Layout.fillHeight: true
+            // ── Border line ───────────────────────────────────────
+            Rectangle { Layout.fillWidth: true; height: 1; color: tuiBorder }
 
-                Loader {
-                    id: marketplaceLoader
-                    anchors.fill: parent
-                    active: root.currentView === "marketplace"
-                    source: "views/MarketplaceView.qml"
+            // ── Main area: buffer list + content ──────────────────
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                spacing: 0
+
+                // ── Left Buffer List ──────────────────────────────
+                Rectangle {
+                    Layout.preferredWidth: 180
+                    Layout.fillHeight: true
+                    color: tuiBg
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        spacing: 0
+
+                        // buffers heading
+                        Rectangle {
+                            Layout.fillWidth: true
+                            height: 20
+                            color: "transparent"
+                            Text {
+                                anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
+                                text: "buffers"
+                                color: tuiDimFg
+                                font.family: "Menlo"
+                                font.pixelSize: 12
+                            }
+                        }
+
+                        // Nav items
+                        Repeater {
+                            model: [
+                                { view: "marketplace", num: "1", icon: "◈", label: "marketplace" },
+                                { view: "buy",         num: "2", icon: "↓", label: "buy"         },
+                                { view: "sell",        num: "3", icon: "↑", label: "sell"        },
+                                { view: "wallet",      num: "4", icon: "◎", label: "wallet"      },
+                                { view: "feed",        num: "5", icon: "≋", label: "feed"        },
+                            ]
+                            delegate: Rectangle {
+                                Layout.fillWidth: true
+                                height: 20
+                                color: root.currentView === modelData.view ? tuiActiveBg : navMa.containsMouse ? tuiStatusBg : "transparent"
+
+                                Row {
+                                    anchors { fill: parent; leftMargin: 6 }
+                                    spacing: 0
+
+                                    Text {
+                                        text: modelData.num + "."
+                                        color: tuiDimFg
+                                        font.family: "Menlo"
+                                        font.pixelSize: 12
+                                        width: 20
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    Text {
+                                        text: modelData.icon + " "
+                                        color: root.currentView === modelData.view ? tuiYellow : tuiDimFg
+                                        font.family: "Menlo"
+                                        font.pixelSize: 12
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    Text {
+                                        text: modelData.label
+                                        color: root.currentView === modelData.view ? tuiFg : tuiBlue
+                                        font.family: "Menlo"
+                                        font.pixelSize: 12
+                                        font.bold: root.currentView === modelData.view
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: navMa; anchors.fill: parent
+                                    hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        root.switchView(modelData.view)
+                                        if (modelData.view === "wallet") agora.getWalletState()
+                                        if (modelData.view === "feed")   agora.subscribeFeed()
+                                    }
+                                }
+                            }
+                        }
+
+                        // Separator
+                        Item { Layout.preferredHeight: 8 }
+                        Rectangle {
+                            Layout.fillWidth: true; height: 1
+                            color: tuiBorder; Layout.leftMargin: 6; Layout.rightMargin: 6
+                        }
+                        Item { Layout.preferredHeight: 4 }
+
+                        // Stack section heading
+                        Rectangle {
+                            Layout.fillWidth: true; height: 20; color: "transparent"
+                            Text {
+                                anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
+                                text: "stack"
+                                color: tuiDimFg
+                                font.family: "Menlo"
+                                font.pixelSize: 12
+                            }
+                        }
+
+                        // Stack status rows
+                        Repeater {
+                            model: [
+                                { label: "messaging",  prop: "messagingStatus"  },
+                                { label: "blockchain", prop: "blockchainStatus" },
+                                { label: "storage",    prop: "storageStatus"    },
+                                { label: "daemon-ai",  prop: "daemonAIStatus"   },
+                            ]
+                            delegate: Rectangle {
+                                Layout.fillWidth: true; height: 18; color: "transparent"
+                                Row {
+                                    anchors { fill: parent; leftMargin: 8 }
+                                    spacing: 4
+                                    Text {
+                                        text: "●"
+                                        color: {
+                                            var s = agora[modelData.prop] || ""
+                                            if (s === "live" || s === "local") return tuiGreen
+                                            if (s === "mock" || s === "testnet") return tuiYellow
+                                            return tuiDimFg
+                                        }
+                                        font.pixelSize: 8
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    Text {
+                                        text: modelData.label
+                                        color: tuiDimFg
+                                        font.family: "Menlo"
+                                        font.pixelSize: 11
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    Item { width: 4; height: 1 }
+                                    Text {
+                                        text: agora[modelData.prop] || "…"
+                                        color: tuiDimFg
+                                        font.family: "Menlo"
+                                        font.pixelSize: 11
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+                            }
+                        }
+
+                        // Separator
+                        Item { Layout.preferredHeight: 8 }
+                        Rectangle {
+                            Layout.fillWidth: true; height: 1
+                            color: tuiBorder; Layout.leftMargin: 6; Layout.rightMargin: 6
+                        }
+                        Item { Layout.preferredHeight: 4 }
+
+                        // Theme picker
+                        Rectangle {
+                            Layout.fillWidth: true; height: 20; color: "transparent"
+                            Text {
+                                anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
+                                text: "themes"
+                                color: tuiDimFg
+                                font.family: "Menlo"
+                                font.pixelSize: 12
+                            }
+                        }
+
+                        Repeater {
+                            model: LogosTheme.themeNames
+                            delegate: Rectangle {
+                                Layout.fillWidth: true; height: 18
+                                color: LogosTheme.currentTheme === modelData ? tuiActiveBg : themeMa.containsMouse ? tuiStatusBg : "transparent"
+
+                                Row {
+                                    anchors { fill: parent; leftMargin: 10 }
+                                    spacing: 6
+                                    Text {
+                                        text: LogosTheme.currentTheme === modelData ? "✓" : " "
+                                        color: tuiGreen
+                                        font.family: "Menlo"
+                                        font.pixelSize: 11
+                                        width: 12
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                    Text {
+                                        text: modelData
+                                        color: LogosTheme.currentTheme === modelData ? tuiFg : tuiBlue
+                                        font.family: "Menlo"
+                                        font.pixelSize: 11
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: themeMa; anchors.fill: parent
+                                    hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                    onClicked: LogosTheme.setTheme(modelData)
+                                }
+                            }
+                        }
+
+                        Item { Layout.fillHeight: true }
+
+                        // Agent info at bottom
+                        Rectangle {
+                            Layout.fillWidth: true; height: 1; color: tuiBorder
+                            Layout.leftMargin: 6; Layout.rightMargin: 6
+                        }
+                        Rectangle {
+                            Layout.fillWidth: true; height: 38; color: "transparent"
+                            Column {
+                                anchors { fill: parent; margins: 6 }
+                                spacing: 2
+                                Text {
+                                    text: agora.agentId.length > 0 ? agora.agentId.slice(0,20) + "…" : "not registered"
+                                    color: tuiDimFg
+                                    font.family: "Menlo"
+                                    font.pixelSize: 10
+                                    elide: Text.ElideMiddle
+                                    width: parent.width
+                                }
+                                Row {
+                                    spacing: 8
+                                    Text { text: (agora.balance || "—") + " NOM"; color: tuiBlue; font.family: "Menlo"; font.pixelSize: 11 }
+                                    Text { text: agora.reputation > 0 ? (agora.reputation * 100).toFixed(1) + "%" : "—"; color: tuiGreen; font.family: "Menlo"; font.pixelSize: 11 }
+                                }
+                            }
+                        }
+                    }
                 }
-                Loader {
-                    id: buyLoader
-                    anchors.fill: parent
-                    active: root.currentView === "buy"
-                    source: "views/BuyView.qml"
+
+                // ── Vertical border ───────────────────────────────
+                Rectangle { Layout.fillHeight: true; width: 1; color: tuiBorder }
+
+                // ── Main content area ─────────────────────────────
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Loader {
+                        id: marketplaceLoader
+                        anchors.fill: parent
+                        active: root.currentView === "marketplace"
+                        source: "views/MarketplaceView.qml"
+                    }
+                    Loader {
+                        id: buyLoader
+                        anchors.fill: parent
+                        active: root.currentView === "buy"
+                        source: "views/BuyView.qml"
+                    }
+                    Loader {
+                        id: sellLoader
+                        anchors.fill: parent
+                        active: root.currentView === "sell"
+                        source: "views/SellView.qml"
+                    }
+                    Loader {
+                        id: walletLoader
+                        anchors.fill: parent
+                        active: root.currentView === "wallet"
+                        source: "views/WalletView.qml"
+                    }
+                    Loader {
+                        id: feedLoader
+                        anchors.fill: parent
+                        active: root.currentView === "feed"
+                        source: "views/FeedView.qml"
+                    }
                 }
-                Loader {
-                    id: sellLoader
-                    anchors.fill: parent
-                    active: root.currentView === "sell"
-                    source: "views/SellView.qml"
+            }
+
+            // ── Border line ───────────────────────────────────────
+            Rectangle { Layout.fillWidth: true; height: 1; color: tuiBorder }
+
+            // ── Bottom Status Bar ─────────────────────────────────
+            Rectangle {
+                Layout.fillWidth: true
+                height: 20
+                color: tuiStatusBg
+
+                RowLayout {
+                    anchors { fill: parent; leftMargin: 8; rightMargin: 8 }
+                    spacing: 0
+
+                    Text {
+                        text: "[" + root.currentView + "]"
+                        color: tuiFg
+                        font.family: "Menlo"
+                        font.pixelSize: 12
+                        font.bold: true
+                    }
+                    Text {
+                        text: " │ "
+                        color: tuiBorder
+                        font.family: "Menlo"
+                        font.pixelSize: 12
+                    }
+                    Text {
+                        text: "Agora Marketplace"
+                        color: tuiBlue
+                        font.family: "Menlo"
+                        font.pixelSize: 12
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Text {
+                        text: "1:marketplace 2:buy 3:sell 4:wallet 5:feed"
+                        color: tuiDimFg
+                        font.family: "Menlo"
+                        font.pixelSize: 11
+                    }
                 }
-                Loader {
-                    id: walletLoader
-                    anchors.fill: parent
-                    active: root.currentView === "wallet"
-                    source: "views/WalletView.qml"
-                }
-                Loader {
-                    id: feedLoader
-                    anchors.fill: parent
-                    active: root.currentView === "feed"
-                    source: "views/FeedView.qml"
+            }
+
+            // ── Input Line ────────────────────────────────────────
+            Rectangle {
+                Layout.fillWidth: true
+                height: 22
+                color: tuiBg
+
+                RowLayout {
+                    anchors { fill: parent; leftMargin: 8; rightMargin: 8 }
+                    spacing: 4
+
+                    Text {
+                        text: ">"
+                        color: tuiYellow
+                        font.family: "Menlo"
+                        font.pixelSize: 12
+                        font.bold: true
+                    }
+                    Text {
+                        text: "type : for commands, / for search"
+                        color: tuiDimFg
+                        font.family: "Menlo"
+                        font.pixelSize: 12
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Text {
+                        text: {
+                            var d = new Date()
+                            return d.getHours().toString().padStart(2,'0') + ":" +
+                                   d.getMinutes().toString().padStart(2,'0') + ":" +
+                                   d.getSeconds().toString().padStart(2,'0')
+                        }
+                        color: tuiDimFg
+                        font.family: "Menlo"
+                        font.pixelSize: 12
+
+                        Timer {
+                            interval: 1000; running: true; repeat: true
+                            onTriggered: parent.text = Qt.binding(function() {
+                                var d = new Date()
+                                return d.getHours().toString().padStart(2,'0') + ":" +
+                                       d.getMinutes().toString().padStart(2,'0') + ":" +
+                                       d.getSeconds().toString().padStart(2,'0')
+                            })
+                        }
+                    }
                 }
             }
         }

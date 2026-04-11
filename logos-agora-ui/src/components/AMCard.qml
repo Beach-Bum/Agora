@@ -1,18 +1,18 @@
-// AMCard.qml
+// AMCard.qml — WeeChat TUI style card (box-drawing border)
 import QtQuick 2.15
 
 Rectangle {
     default property alias content: inner.data
     property string title: ""
 
-    color:        "#141720"
-    border.color: "#252a3d"
+    color:        LogosTheme.bg
+    border.color: LogosTheme.border
     border.width: 1
-    radius:       10
+    radius:       0
 
     Column {
         id: inner
-        anchors { fill: parent; margins: 16 }
-        spacing: 12
+        anchors { fill: parent; margins: 8 }
+        spacing: 4
     }
 }
