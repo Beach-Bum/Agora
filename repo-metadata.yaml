@@ -1,0 +1,57 @@
+schema_version: 1
+
+id: "agora"
+name: "Agora"
+current_repo: "Beach-Bum/Agora"
+canonical_repo: "Beach-Bum/Agora"
+canonical_site_url: ""
+
+status: "active"
+type: "research"
+visibility: "public"
+public_posture: "public-system-artifact"
+migration_stage: "docs-only"
+risk: "low"
+
+provenance_status: "tracked"
+weblog_posture: "public-link"
+public_summary: "Public Lambda Prize research submission."
+
+summary: "A public Lambda Prize research submission."
+
+thesis_relation:
+  - creative-engineering
+  - research
+
+stack:
+  languages: []
+  frameworks: []
+  package_managers: []
+  deployment: []
+  design_systems: []
+
+links:
+  github: "https://github.com/Beach-Bum/Agora"
+  site: ""
+  demo: ""
+  docs: ""
+  citation: ""
+
+related_repositories:
+  - "Beach-Bum/nk-system"
+
+checks:
+  install: ""
+  lint: ""
+  typecheck: ""
+  test: ""
+  build: ""
+
+publication:
+  license: "MIT claimed by audit; LICENSE file missing"
+  citation_required: false
+  contains_private_assets: "unknown"
+  contains_credentials_or_secrets: "no obvious credentials found in audit"
+  safe_to_make_public: "already-public"
+
+notes: "Public Lambda Prize submission. Audit found no deployment and no obvious secrets. Public posture appears intentional. Missing LICENSE file and stale references should be handled separately, not in this metadata-only PR."
